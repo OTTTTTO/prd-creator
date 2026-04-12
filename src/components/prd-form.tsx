@@ -1,5 +1,6 @@
 import { FormEvent, Dispatch, SetStateAction } from 'react';
 import { PrdInput } from '../lib/prd';
+import { useLanguage } from '../i18n/language-provider';
 import { Button } from './button';
 import { InputField } from './input-field';
 import { Section } from './section';
@@ -20,6 +21,7 @@ export function PRDForm({
   isLoading,
   onRefineSection
 }: PRDFormProps) {
+  const { t } = useLanguage();
   const handleChange: React.ChangeEventHandler<
     HTMLInputElement | HTMLTextAreaElement
   > = (event) => {
@@ -30,117 +32,117 @@ export function PRDForm({
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <Section
-        title="1. Core Product Idea"
+        title={t('form.section1')}
         onRefine={() => onRefineSection('1. Core Product Idea')}
       >
         <InputField
-          label="Product Name"
+          label={t('form.productName')}
           id="productName"
           name="productName"
           value={prdInput.productName}
           onChange={handleChange}
-          placeholder="e.g., Apollo - The AI Trip Planner"
+          placeholder={t('form.productNamePlaceholder')}
           required
         />
         <TextareaField
-          label="Problem Statement"
+          label={t('form.problemStatement')}
           id="problemStatement"
           name="problemStatement"
           value={prdInput.problemStatement}
           onChange={handleChange}
-          description="What specific problem is this product trying to solve for its users?"
-          placeholder="e.g., Planning a group trip is chaotic and time-consuming..."
+          description={t('form.problemStatementDesc')}
+          placeholder={t('form.problemStatementPlaceholder')}
           required
         />
         <TextareaField
-          label="Proposed Solution"
+          label={t('form.proposedSolution')}
           id="proposedSolution"
           name="proposedSolution"
           value={prdInput.proposedSolution}
           onChange={handleChange}
-          description="Briefly describe how your product solves this problem."
-          placeholder="e.g., A mobile app that centralizes itineraries, budgets, and communication..."
+          description={t('form.proposedSolutionDesc')}
+          placeholder={t('form.proposedSolutionPlaceholder')}
           required
         />
       </Section>
 
       <Section
-        title="2. Audience & Market"
+        title={t('form.section2')}
         onRefine={() => onRefineSection('2. Audience & Market')}
       >
         <TextareaField
-          label="Target Audience"
+          label={t('form.targetAudience')}
           id="targetAudience"
           name="targetAudience"
           value={prdInput.targetAudience}
           onChange={handleChange}
-          description="Who are the primary users of this product? Be specific."
-          placeholder="e.g., Tech-savvy millennials aged 25-40 who frequently travel in groups..."
+          description={t('form.targetAudienceDesc')}
+          placeholder={t('form.targetAudiencePlaceholder')}
           required
         />
         <TextareaField
-          label="Business Goals & Success Metrics"
+          label={t('form.businessGoals')}
           id="businessGoals"
           name="businessGoals"
           value={prdInput.businessGoals}
           onChange={handleChange}
-          description="What are the key business objectives and how will you measure success (KPIs)?"
-          placeholder="e.g., Goal: Achieve 10,000 monthly active users in 6 months. KPI: User retention rate > 30%..."
+          description={t('form.businessGoalsDesc')}
+          placeholder={t('form.businessGoalsPlaceholder')}
         />
       </Section>
 
       <Section
-        title="3. Features & Scope"
+        title={t('form.section3')}
         onRefine={() => onRefineSection('3. Features & Scope')}
       >
         <TextareaField
-          label="Core Features (MVP)"
+          label={t('form.coreFeatures')}
           id="coreFeatures"
           name="coreFeatures"
           value={prdInput.coreFeatures}
           onChange={handleChange}
-          description="List the absolute essential features for the first version. Use bullet points or numbered lists."
-          placeholder="- Collaborative Itinerary Planning\n- Shared Expense Tracking\n- Group Chat"
+          description={t('form.coreFeaturesDesc')}
+          placeholder={t('form.coreFeaturesPlaceholder')}
           required
         />
         <TextareaField
-          label="Future Features (Post-MVP)"
+          label={t('form.futureFeatures')}
           id="futureFeatures"
           name="futureFeatures"
           value={prdInput.futureFeatures}
           onChange={handleChange}
-          description="What are some potential features for future releases?"
-          placeholder="- Booking integrations (flights, hotels)\n- AI-powered recommendations\n- Offline mode"
+          description={t('form.futureFeaturesDesc')}
+          placeholder={t('form.futureFeaturesPlaceholder')}
         />
       </Section>
 
       <Section
-        title="4. Technical Details (Optional)"
+        title={t('form.section4')}
         onRefine={() => onRefineSection('4. Technical Details (Optional)')}
       >
         <TextareaField
-          label="Technology Stack"
+          label={t('form.techStack')}
           id="techStack"
           name="techStack"
           value={prdInput.techStack}
           onChange={handleChange}
-          placeholder="e.g., React Native, Firebase, Node.js"
+          placeholder={t('form.techStackPlaceholder')}
           rows={3}
         />
         <TextareaField
-          label="Constraints & Dependencies"
+          label={t('form.constraints')}
           id="constraints"
           name="constraints"
           value={prdInput.constraints}
           onChange={handleChange}
-          description="Are there any known technical limitations, budget constraints, or dependencies?"
-          placeholder="e.g., Must integrate with Stripe API for payments. Budget is limited to $50k for MVP."
+          description={t('form.constraintsDesc')}
+          placeholder={t('form.constraintsPlaceholder')}
         />
       </Section>
 
       <div className="pt-2">
         <Button type="submit" isLoading={isLoading} size="lg">
-          Generate PRD
+          {t('form.generatePrd')}
         </Button>
       </div>
     </form>
