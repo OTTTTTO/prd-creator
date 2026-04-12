@@ -114,7 +114,8 @@ export function PRDWizard({
           productIdea: productIdea.trim(),
           images: imageData,
           apiKey,
-          model: selectedModel
+          model: selectedModel,
+          locale
         })
       });
 

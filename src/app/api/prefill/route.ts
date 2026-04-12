@@ -5,7 +5,7 @@ import { getContextHeader } from '../_lib/datetime';
 
 export async function POST(request: NextRequest) {
   try {
-    const { productIdea, images, apiKey, model } = (await request.json()) as {
+    const { productIdea, images, apiKey, model, locale } = (await request.json()) as {
       productIdea?: string;
       images?: Array<{
         id: string;
@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
       }>;
       apiKey?: string;
       model?: string;
+      locale?: string;
     };
 
     if (!apiKey || typeof apiKey !== 'string') {
@@ -54,7 +55,12 @@ User's Idea: "${productIdea}"${imageContext}
 Return the response as a JSON object that strictly adheres to the provided schema. For features, use bullet points within the string. For success metrics, include specific, measurable KPIs with targets where appropriate.`;
 
     // Add current date/time context to the prompt
-    const promptWithContext = getContextHeader() + basePrompt;
+    let promptWithContext = getContextHeader() + basePrompt;
+
+    // Add locale instruction for non-English languages
+    if (locale === 'zh') {
+      promptWithContext += '\n\nPlease respond in Simplified Chinese (简体中文).';
+    }
 
     const response = await client.models.generateContent({
       model: model || 'gemini-flash-latest',

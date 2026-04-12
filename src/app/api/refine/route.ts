@@ -35,13 +35,14 @@ function isPrdInput(value: unknown): value is PrdInput {
 
 export async function POST(request: NextRequest) {
   try {
-    const { currentInputs, sectionTitle, userFeedback, apiKey, model } =
+    const { currentInputs, sectionTitle, userFeedback, apiKey, model, locale } =
       (await request.json()) as {
         currentInputs?: unknown;
         sectionTitle?: string;
         userFeedback?: string;
         apiKey?: string;
         model?: string;
+        locale?: string;
       };
 
     if (!apiKey || typeof apiKey !== 'string') {
@@ -92,7 +93,12 @@ User's Feedback for refinement: "${userFeedback}"
 Your task is to update the values for the fields in the "${sectionTitle}" section based on the user's feedback. Maintain the existing tone and style. Return ONLY a JSON object containing the updated key-value pairs for the fields in this section. The keys must be: ${fieldsToRefine.join(', ')}. Do not include any other text or explanations.`;
 
     // Add current date/time context to the prompt
-    const promptWithContext = getContextHeader() + basePrompt;
+    let promptWithContext = getContextHeader() + basePrompt;
+
+    // Add locale instruction for non-English languages
+    if (locale === 'zh') {
+      promptWithContext += '\n\nPlease respond in Simplified Chinese (简体中文).';
+    }
 
     const responseSchemaProperties: Record<string, { type: Type.STRING }> = {};
     fieldsToRefine.forEach((field) => {

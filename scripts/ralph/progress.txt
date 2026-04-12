@@ -206,3 +206,18 @@ Branch: ralph/chinese-i18n
   - All page namespace keys were pre-populated in US-001, continuing the pattern of pure component-only changes
   - Manual browser verification needed: confirm toggle switches all visible text instantly
 ---
+
+## 2026-04-13 22:30 - US-012
+- Added optional `locale` parameter to `buildGenerationPrompt()` in src/lib/prd.ts
+- When locale === 'zh': appends 'Please write the entire PRD in Simplified Chinese (简体中文). All section titles, content, and descriptions must be in Chinese.' to the prompt
+- When locale === 'en' or undefined: no modification to existing prompt
+- Modified src/app/api/generate/route.ts: extracts 'locale' from request body and passes to buildGenerationPrompt()
+- Modified src/components/prd-wizard.tsx: destructure `locale` from useLanguage(), passes `locale` in generate API call body
+- Typecheck passes
+- Files changed: src/lib/prd.ts, src/app/api/generate/route.ts, src/components/prd-wizard.tsx
+- **Learnings for future iterations:**
+  - The pattern for locale-aware API calls: frontend passes `locale` in request body → route extracts it → passes to prompt builder → prompt builder appends language instruction
+  - This same pattern needs to be applied to prefill and refine routes in US-013
+  - The locale parameter is optional (`locale?: string`) so existing code without locale still works (backward compatible)
+  - `useLanguage()` already exposes both `t` and `locale` — no changes to the provider needed
+---
