@@ -1,4 +1,10 @@
+'use client';
+
+import { useLanguage } from '@/i18n/language-provider';
+
 export function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="border-t-[4px] border-black bg-white py-8 shadow-[0_-4px_0px_#000]">
       <div className="container mx-auto px-4 text-center">
@@ -19,7 +25,7 @@ export function Footer() {
           </a>
         </div>
         <p className="text-sm font-semibold tracking-wide text-gray-700 uppercase">
-          Powered by Gemini API • Built for modern product teams
+          {t('footer.poweredBy')}
         </p>
       </div>
     </footer>

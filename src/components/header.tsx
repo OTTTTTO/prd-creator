@@ -1,4 +1,7 @@
+'use client';
+
 import { FileText } from 'lucide-react';
+import { useLanguage } from '@/i18n/language-provider';
 
 interface HeaderProps {
   onSettingsClick: () => void;
@@ -8,6 +11,8 @@ interface HeaderProps {
 }
 
 export function Header({ onSettingsClick, onSavedDraftsClick }: HeaderProps) {
+  const { t } = useLanguage();
+
   return (
     <header className="sticky top-0 z-50 border-b-[4px] border-black bg-white shadow-[0_4px_0px_#000]">
       <div className="relative container mx-auto px-4 py-2">
@@ -20,11 +25,11 @@ export function Header({ onSettingsClick, onSavedDraftsClick }: HeaderProps) {
                   "'Big Shoulders Display', 'Impact', 'Arial Black', sans-serif"
               }}
             >
-              <span className="text-[#2196F3]">PRD</span> CREATOR{' '}
+              {t('header.title')}{' '}
               <FileText className="inline h-6 w-6 text-black" />
             </h1>
             <p className="hidden text-sm font-medium text-gray-700 md:block">
-              Create professional PRDs instantly
+              {t('header.subtitle')}
             </p>
           </div>
 
@@ -34,8 +39,8 @@ export function Header({ onSettingsClick, onSavedDraftsClick }: HeaderProps) {
               <button
                 onClick={onSavedDraftsClick}
                 className="border-[2px] border-black bg-[#FFEB3B] p-2 text-black shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
-                aria-label="Saved PRDs"
-                title="Saved PRDs"
+                aria-label={t('header.savedPrds')}
+                title={t('header.savedPrds')}
               >
                 <svg
                   className="h-5 w-5"
@@ -55,8 +60,8 @@ export function Header({ onSettingsClick, onSavedDraftsClick }: HeaderProps) {
             <button
               onClick={onSettingsClick}
               className="border-[2px] border-black bg-white p-2 text-black shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
-              aria-label="Settings"
-              title="Settings"
+              aria-label={t('header.settings')}
+              title={t('header.settings')}
             >
               <svg
                 className="h-5 w-5"
