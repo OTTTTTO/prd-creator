@@ -15,6 +15,7 @@ import { Loader } from './loader';
 import { TextareaField } from './textarea-field';
 import { PRDDisplay } from './prd-display';
 import ImageAttachmentComponent from './image-attachment';
+import { useLanguage } from '@/i18n/language-provider';
 
 interface PRDWizardProps {
   apiKey: string;
@@ -63,24 +64,25 @@ export function PRDWizard({
   const [prefillError, setPrefillError] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [generateError, setGenerateError] = useState<string>('');
+  const { t } = useLanguage();
 
   const steps = [
     {
       id: 1,
-      title: 'Idea Entry',
-      description: 'Describe your product idea',
+      title: t('wizard.stepIdeaTitle'),
+      description: t('wizard.stepIdeaDesc'),
       icon: Sparkles
     },
     {
       id: 2,
-      title: 'Auto-fill & Edit',
-      description: 'Review and customize details',
+      title: t('wizard.stepEditTitle'),
+      description: t('wizard.stepEditDesc'),
       icon: Edit3
     },
     {
       id: 3,
-      title: 'PRD Preview',
-      description: 'Your generated document',
+      title: t('wizard.stepPreviewTitle'),
+      description: t('wizard.stepPreviewDesc'),
       icon: FileText
     }
   ];
@@ -336,7 +338,7 @@ export function PRDWizard({
             <div className="h-3 w-3 animate-pulse rounded-full bg-[#4CAF50]"></div>
             <div className="text-left">
               <p className="text-xs font-bold text-black uppercase">
-                Currently Using:
+                {t('wizard.currentlyUsing')}
               </p>
               <p className="text-sm font-black">
                 {modelDisplayName || selectedModel}
@@ -357,12 +359,11 @@ export function PRDWizard({
               className="flex items-center gap-2 px-6 py-3"
             >
               <ArrowLeft className="h-5 w-5" />
-              Previous
+              {t('wizard.previous')}
             </Button>
 
             <div className="flex items-center gap-4 text-lg font-bold text-black">
-              <span>Step {currentStep}</span>
-              <span className="text-gray-500">of {steps.length}</span>
+              <span>{t('wizard.stepOf', { current: currentStep, total: steps.length })}</span>
             </div>
 
             <Button
@@ -375,7 +376,7 @@ export function PRDWizard({
               isLoading={isPrefilling || isGenerating}
               className="flex items-center gap-2 px-6 py-3"
             >
-              {currentStep === 3 ? 'Start New Idea' : 'Next'}
+              {currentStep === 3 ? t('wizard.startNewIdea') : t('wizard.next')}
               {currentStep < 3 && <ArrowRight className="h-5 w-5" />}
             </Button>
           </div>
@@ -397,34 +398,32 @@ export function PRDWizard({
                     "'Big Shoulders Display', 'Impact', 'Arial Black', sans-serif"
                 }}
               >
-                What&apos;s Your Product Idea?
+                {t('wizard.yourIdeaTitle')}
               </h2>
               <p className="text-xl leading-relaxed text-gray-700">
-                Tell us about your product in a few sentences, and we&apos;ll
-                help you build a comprehensive PRD.
+                {t('wizard.yourIdeaDesc')}
               </p>
             </div>
 
             <div className="space-y-6">
               <TextareaField
-                label="Product Idea"
+                label={t('wizard.productIdea')}
                 id="productIdea"
                 name="productIdea"
                 value={productIdea}
                 onChange={(e) => setProductIdea(e.target.value)}
-                placeholder="e.g., A mobile app that helps remote workers find and book coworking spaces with real-time availability..."
+                placeholder={t('wizard.productIdeaPlaceholder')}
                 rows={8}
-                description="Describe your product concept, target users, and key features in your own words."
+                description={t('wizard.productIdeaDesc')}
               />
 
               <div className="rounded-lg border-[3px] border-blue-200 bg-blue-50 p-4">
                 <h3 className="mb-2 flex items-center gap-2 text-lg font-bold text-blue-900">
                   <Camera className="h-6 w-6" />
-                  Add Visual Context (Optional)
+                  {t('wizard.addVisualContext')}
                 </h3>
                 <p className="mb-4 text-blue-700">
-                  Attach mockups, diagrams, wireframes, or reference photos to
-                  help the AI better understand your product idea.
+                  {t('wizard.addVisualContextDesc')}
                 </p>
                 <ImageAttachmentComponent
                   images={productIdeaImages}
@@ -437,7 +436,7 @@ export function PRDWizard({
 
             {prefillError && (
               <div className="border-[4px] border-black bg-[#F44336] p-6 text-white shadow-[4px_4px_0px_#000]">
-                <p className="mb-2 font-bold tracking-wide uppercase">Error:</p>
+                <p className="mb-2 font-bold tracking-wide uppercase">{t('wizard.error')}</p>
                 <p className="font-medium">{prefillError}</p>
               </div>
             )}
@@ -457,11 +456,10 @@ export function PRDWizard({
                     "'Big Shoulders Display', 'Impact', 'Arial Black', sans-serif"
                 }}
               >
-                Review & Customize Details
+                {t('wizard.reviewTitle')}
               </h2>
               <p className="text-xl leading-relaxed text-gray-700">
-                We&apos;ve pre-filled your PRD based on your idea. Review and
-                edit any section as needed.
+                {t('wizard.reviewDesc')}
               </p>
             </div>
 
@@ -469,7 +467,7 @@ export function PRDWizard({
               <div className="space-y-6">
                 <div>
                   <label className="mb-2 block text-sm font-bold tracking-wide text-black uppercase">
-                    Product Name
+                    {t('wizard.productName')}
                   </label>
                   <input
                     type="text"
@@ -478,61 +476,61 @@ export function PRDWizard({
                     value={prdInput.productName}
                     onChange={handleChange}
                     className="block w-full border-[3px] border-black bg-white px-4 py-3 font-medium text-black placeholder-gray-500 shadow-[4px_4px_0px_#000] transition-all duration-150 focus:translate-x-[-1px] focus:translate-y-[-1px] focus:border-[#2196F3] focus:shadow-[4px_4px_0px_#2196F3] focus:outline-none"
-                    placeholder="e.g., Apollo - The AI Trip Planner"
+                    placeholder={t('wizard.productNamePlaceholder')}
                   />
                 </div>
 
                 <TextareaField
-                  label="Problem Statement"
+                  label={t('wizard.problemStatement')}
                   id="problemStatement"
                   name="problemStatement"
                   value={prdInput.problemStatement}
                   onChange={handleChange}
-                  placeholder="What problem does your product solve?"
+                  placeholder={t('wizard.problemStatementPlaceholder')}
                   rows={6}
                 />
               </div>
 
               <div className="space-y-6">
                 <TextareaField
-                  label="Target Audience"
+                  label={t('wizard.targetAudience')}
                   id="targetAudience"
                   name="targetAudience"
                   value={prdInput.targetAudience}
                   onChange={handleChange}
-                  placeholder="Who are your target users?"
+                  placeholder={t('wizard.targetAudiencePlaceholder')}
                   rows={6}
                 />
 
                 <TextareaField
-                  label="Key Features"
+                  label={t('wizard.keyFeatures')}
                   id="keyFeatures"
                   name="keyFeatures"
                   value={prdInput.keyFeatures}
                   onChange={handleChange}
-                  placeholder="What are the main features that differentiate your product?"
+                  placeholder={t('wizard.keyFeaturesPlaceholder')}
                   rows={6}
-                  description="List the key differentiating features that make your product unique and valuable."
+                  description={t('wizard.keyFeaturesDesc')}
                 />
               </div>
 
               <div className="md:col-span-2">
                 <TextareaField
-                  label="Success Metrics"
+                  label={t('wizard.successMetrics')}
                   id="successMetrics"
                   name="successMetrics"
                   value={prdInput.successMetrics}
                   onChange={handleChange}
-                  placeholder="How will you measure success?"
+                  placeholder={t('wizard.successMetricsPlaceholder')}
                   rows={4}
-                  description="Define specific, measurable KPIs and targets to track product success (e.g., User retention > 40%, 10k MAU in 6 months)."
+                  description={t('wizard.successMetricsDesc')}
                 />
               </div>
             </div>
 
             {generateError && (
               <div className="border-[4px] border-black bg-[#F44336] p-6 text-white shadow-[4px_4px_0px_#000]">
-                <p className="mb-2 font-bold tracking-wide uppercase">Error:</p>
+                <p className="mb-2 font-bold tracking-wide uppercase">{t('wizard.error')}</p>
                 <p className="font-medium">{generateError}</p>
               </div>
             )}
@@ -552,11 +550,10 @@ export function PRDWizard({
                     "'Big Shoulders Display', 'Impact', 'Arial Black', sans-serif"
                 }}
               >
-                Your PRD is Ready!
+                {t('wizard.prdReadyTitle')}
               </h2>
               <p className="text-xl leading-relaxed text-gray-700">
-                Here&apos;s your generated Product Requirements Document. You
-                can download it, copy it, or view in full page mode.
+                {t('wizard.prdReadyDesc')}
               </p>
             </div>
 
