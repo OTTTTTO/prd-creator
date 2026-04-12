@@ -245,7 +245,7 @@
         "Typecheck passes"
       ],
       "priority": 13,
-      "passes": false,
+      "passes": true,
       "notes": "Depends on US-012 (pattern established). Same approach: append language instruction to existing prompts."
     },
     {
@@ -262,7 +262,7 @@
         "Typecheck passes"
       ],
       "priority": 14,
-      "passes": false,
+      "passes": true,
       "notes": "Depends on US-002 (LanguageProvider). Since we're not using URL-based routing, SEO is handled via client-side document.title and meta tag manipulation. Social crawlers will see the default (Chinese) since SSR uses the default locale."
     },
     {

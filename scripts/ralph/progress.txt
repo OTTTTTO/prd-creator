@@ -221,3 +221,31 @@ Branch: ralph/chinese-i18n
   - The locale parameter is optional (`locale?: string`) so existing code without locale still works (backward compatible)
   - `useLanguage()` already exposes both `t` and `locale` — no changes to the provider needed
 ---
+
+## 2026-04-13 23:00 - US-013
+- Added optional `locale` parameter to prefill/route.ts and refine/route.ts request body extraction
+- When locale === 'zh': appends 'Please respond in Simplified Chinese (简体中文).' to the prompt
+- When locale === 'en' or undefined: no modification to existing prompt
+- Updated prefill fetch call in prd-wizard.tsx to include `locale` in request body
+- Typecheck passes (only ralph/ subdirectory errors, which are unrelated)
+- Files changed: src/app/api/prefill/route.ts, src/app/api/refine/route.ts, src/components/prd-wizard.tsx
+- **Learnings for future iterations:**
+  - The RefineModal component is defined but NOT imported/used anywhere in the current UI — there is no frontend code that calls /api/refine. The route is ready for locale, but the frontend wiring doesn't exist yet
+  - All three API routes (generate, prefill, refine) now follow the same locale pattern: extract from body, append Chinese instruction if locale === 'zh'
+  - The locale instruction string is consistent across routes: 'Please respond in Simplified Chinese (简体中文).' — US-015 may want to extract this to a shared constant
+---
+
+## 2026-04-13 23:30 - US-014
+- Created src/i18n/use-document-metadata.ts hook with useEffect that updates document.title, html lang attribute, description meta, og:title, og:description, twitter:title, twitter:description based on locale
+- Added `seo` namespace to en.json and zh.json with title, description, ogTitle, ogDescription keys
+- Updated providers.tsx: wrapped children with DocumentMetadataUpdater component that calls useDocumentMetadata() inside LanguageProvider context
+- The SSR metadata in layout.tsx remains as static English defaults (for social crawlers) — client-side hook dynamically overrides for users
+- document.documentElement.lang is set to 'zh' or 'en' via the hook
+- Typecheck passes
+- Files changed: src/i18n/use-document-metadata.ts (new), src/app/providers.tsx, src/locales/en.json, src/locales/zh.json
+- **Learnings for future iterations:**
+  - The useDocumentMetadata hook must be called inside a component that is a child of LanguageProvider — hence the DocumentMetadataUpdater wrapper in providers.tsx
+  - Meta tags in layout.tsx use both `property` (og:*) and `name` (twitter:*, description) attributes — the hook queries both to find existing elements
+  - The SSR metadata stays as static English defaults for social crawlers; only the client-side experience gets dynamic locale updates (acceptable since this is a SPA-style app)
+  - The `seo` namespace in translation files is separate from the `page` namespace — seo keys are for meta tags, page keys are for visible page content
+---
