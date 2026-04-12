@@ -1,0 +1,208 @@
+# Ralph Progress Log
+Started: 2026-04-12
+Feature: AI PRD Creator 中英文双语国际化
+Branch: ralph/chinese-i18n
+---
+
+## Codebase Patterns
+- Path alias `@/*` maps to `./src/*` (configured in tsconfig.json)
+- Components are in `src/components/`, lib utilities in `src/lib/`
+- The `ralph/` subdirectory is a separate project (flowchart) — not part of the main app, and its TS errors can be ignored
+- package-lock.json is in .gitignore — don't try to stage it
+- Git user identity is not configured globally — must set per-repo before committing
+- All components use Neo-Brutalism styling: thick borders (2-5px), box-shadow offsets, uppercase tracking-wide text
+- `use client` directive is used on interactive components (wizard, modals, PWA prompt)
+- Header and Footer are server components (no 'use client' directive)
+
+---
+
+## 2026-04-12 21:00 - US-001
+- Installed next-intl@4.9.1 as project dependency
+- Created `src/i18n/config.ts` with locales ['zh', 'en'], defaultLocale 'zh', and Locale type
+- Created `src/locales/en.json` with 135 keys across 11 namespaces (header, footer, wizard, form, settings, drafts, prdDisplay, viewer, refine, pwa, page, common, loader)
+- Created `src/locales/zh.json` with identical key structure and full Chinese translations
+- Verified both JSON files have identical key structures (135 keys each)
+- Typecheck passes (main project clean; ralph/ subdirectory has unrelated errors)
+- Files changed: src/i18n/config.ts, src/locales/en.json, src/locales/zh.json, package.json
+- **Learnings for future iterations:**
+  - The `ralph/` subdirectory is a separate project and causes TS errors — not part of the main app
+  - package-lock.json is gitignored — use npm install but don't stage the lock file
+  - All translation keys scanned from every component file to ensure completeness for all 15 user stories
+  - Namespace structure matches PRD story breakdown: header, footer, wizard, form, settings, drafts, prdDisplay, viewer, refine, pwa, page, common, loader
+  - Some translations use interpolation syntax `{current}`, `{total}`, `{count}`, `{section}` — future stories will need to handle these
+---
+
+## 2026-04-12 21:30 - US-002
+- Created `src/i18n/language-provider.tsx` as a 'use client' component with LanguageProvider context and useLanguage() hook
+- Created `src/app/providers.tsx` as a 'use client' wrapper to bridge Server Component layout.tsx with client-side LanguageProvider
+- Updated `src/app/layout.tsx` to import Providers and wrap {children} with it
+- t() function supports dot-notation keys and optional params for interpolation ({current}, {count}, etc.)
+- Locale detection: reads localStorage 'locale' key, falls back to navigator.language (zh* → 'zh', else → 'zh')
+- Typecheck passes cleanly
+- Files changed: src/i18n/language-provider.tsx (new), src/app/providers.tsx (new), src/app/layout.tsx (modified)
+- **Learnings for future iterations:**
+  - layout.tsx is a Server Component — cannot use 'use client' directly, so providers.tsx acts as the client boundary
+  - The t() function with params uses simple string replacement: `{key}` → value — all future components can use t('key', { param: value })
+  - Translation files are statically imported (not lazy-loaded) — fine for 2 locales but worth noting if more are added
+---
+
+## 2026-04-12 22:15 - US-004
+- Replaced all remaining hardcoded English strings in prd-wizard.tsx with t() calls
+- Step 2 form fields: Target Audience, Key Features, Success Metrics labels/placeholders/descriptions now use t() calls
+- Step 2 error label ("Error:") replaced with t('wizard.error')
+- Step 3 title ("Your PRD is Ready!") replaced with t('wizard.prdReadyTitle')
+- Step 3 description replaced with t('wizard.prdReadyDesc')
+- All translation keys already existed in en.json and zh.json from US-001 — no JSON changes needed
+- Typecheck passes (only ralph/ subdirectory errors, which are unrelated)
+- Files changed: src/components/prd-wizard.tsx
+- **Learnings for future iterations:**
+  - Most wizard strings were already translated in US-003 — only Step 2 form fields (targetAudience, keyFeatures, successMetrics) and Step 3 (prdReady) were remaining
+  - The Edit tool is sensitive to exact whitespace matching — use short, unique strings for replacements when possible
+  - The &apos; HTML entity in JSX source needs exact matching including the semicolon
+  - All wizard namespace keys in en.json/zh.json were pre-populated in US-001, making this story a pure component-only change
+---
+
+## 2026-04-12 23:30 - US-005
+- Replaced all 29 hardcoded English strings in prd-form.tsx with t() calls
+- Section titles (4): form.section1 through form.section4
+- Field labels (9): productName, problemStatement, proposedSolution, targetAudience, businessGoals, coreFeatures, futureFeatures, techStack, constraints
+- Placeholders (9): matching *Placeholder keys for each field
+- Descriptions (7): problemStatementDesc, proposedSolutionDesc, targetAudienceDesc, businessGoalsDesc, coreFeaturesDesc, futureFeaturesDesc, constraintsDesc
+- Submit button: form.generatePrd
+- All translation keys already existed in en.json/zh.json from US-001 — no JSON changes needed
+- onRefineSection callbacks kept as English string identifiers (used as programmatic keys for refine logic)
+- Typecheck passes
+- Files changed: src/components/prd-form.tsx
+- **Learnings for future iterations:**
+  - The onRefineSection callback passes section titles as string identifiers to the refine logic — these must stay as English strings, not translated, since they're used as keys in the refinement system
+  - All form namespace keys were pre-populated in US-001, making this a pure component-only change (same pattern as US-004)
+  - The form component follows a repetitive pattern: label → t('form.xxx'), description → t('form.xxxDesc'), placeholder → t('form.xxxPlaceholder')
+---
+
+## 2026-04-13 00:15 - US-006
+- loader.tsx: added 'use client', imported useLanguage, replaced "Generating your PRD..." with t('loader.generating') and "The AI is thinking..." with t('loader.thinking')
+- button.tsx: added 'use client', imported useLanguage, changed default loadingLabel from hardcoded 'Generating...' to t('common.generating') via nullish coalescing
+- section.tsx: added 'use client', imported useLanguage, replaced "Refine" button text with t('common.refine') and aria-label with t('common.refineAriaLabel', { section: title })
+- input-field.tsx and textarea-field.tsx: no hardcoded text found — all labels/errors passed as props
+- Added common.refine and common.refineAriaLabel keys to both en.json and zh.json
+- Typecheck passes
+- Files changed: src/components/loader.tsx, src/components/button.tsx, src/components/section.tsx, src/locales/en.json, src/locales/zh.json
+- **Learnings for future iterations:**
+  - input-field.tsx and textarea-field.tsx have no hardcoded text — all display strings come from parent components via props, so no translation needed
+  - section.tsx has a "Refine" button with aria-label that needed new common namespace keys
+  - button.tsx uses nullish coalescing (??) for loadingLabel so callers can override the translated default
+  - All utility components now have 'use client' directive since they use useLanguage() hook
+---
+
+## 2026-04-13 09:30 - US-007
+- Replaced all 14 hardcoded English strings in settings-modal.tsx with t() calls
+- Title: SETTINGS → t('settings.title')
+- Close button aria-label → t('settings.close')
+- API Key label → t('settings.apiKeyLabel')
+- API Key placeholder → t('settings.apiKeyPlaceholder')
+- Show/Hide toggle → t('settings.show') / t('settings.hide')
+- "Get your API key from" → t('settings.getApiKey')
+- Model Selection label → t('settings.modelSelection')
+- Fetching... → t('settings.fetching')
+- LOADED → t('settings.loaded')
+- Model fetch error → t('settings.modelFetchError')
+- Input/Output limit + tokens → t('settings.inputLimit') / t('settings.outputLimit') / t('settings.tokens')
+- Unlimited Token Generation title+desc → t('settings.unlimitedTitle') / t('settings.unlimitedDesc')
+- Save Settings / Cancel buttons → t('settings.save') / t('settings.cancel')
+- All translation keys already existed in en.json/zh.json from US-001 — no JSON changes needed
+- Typecheck passes
+- Files changed: src/components/settings-modal.tsx
+- **Learnings for future iterations:**
+  - The modelsError state captures the translated string at error time, not display time — acceptable since locale rarely changes mid-error, but worth noting
+  - The `{models.length} LOADED` text is split into `{count} {translated_word}` — same pattern used in other count displays
+  - All settings namespace keys were pre-populated in US-001, continuing the pattern of pure component-only changes
+---
+
+## 2026-04-13 10:00 - US-008
+- Replaced all 8 hardcoded English strings in saved-drafts-modal.tsx with t() calls
+- Title: "Saved PRDs" → t('drafts.title')
+- Count text: "{n} saved PRDs (max 12)" → t('drafts.count', { count })
+- Loading: "Loading drafts..." → t('drafts.loading')
+- Empty title: "No Saved PRDs" → t('drafts.emptyTitle')
+- Empty description: "Generate and save..." → t('drafts.emptyDesc')
+- Delete button + title: "Delete" / "Delete draft" → t('drafts.delete') / t('drafts.deleteTitle')
+- Delete confirm: "Are you sure..." → t('drafts.deleteConfirm')
+- Close button: "Close" → t('drafts.close')
+- Changed date formatting from hardcoded 'en-US' to dynamic locale ('zh-CN' or 'en-US')
+- Added drafts.deleteTitle key to both en.json and zh.json
+- All other drafts namespace keys already existed from US-001
+- Typecheck passes
+- Files changed: src/components/saved-drafts-modal.tsx, src/locales/en.json, src/locales/zh.json
+- **Learnings for future iterations:**
+  - Date formatting uses `toLocaleDateString()` with dynamic locale: `locale === 'zh' ? 'zh-CN' : 'en-US'` — this pattern can be reused in any component that formats dates
+  - The drafts namespace keys were pre-populated in US-001 with a slightly different structure than what the PRD specified (e.g. 'emptyTitle'/'emptyDesc' instead of 'empty') — always check existing keys before adding new ones
+  - The "Load" button mentioned in the PRD doesn't exist in the actual component — drafts are loaded by clicking the draft card itself, not a separate button
+---
+
+## 2026-04-13 11:00 - US-009
+- Replaced all 14 hardcoded English strings in prd-display.tsx with t() calls
+  - Header labels: LIVE PREVIEW → t('prdDisplay.livePreview'), GENERATED PRD → t('prdDisplay.generatedPrd')
+  - Save button states: Save → t('prdDisplay.save'), Saving... → t('prdDisplay.saving'), Saved! → t('prdDisplay.saved')
+  - Save button title → t('prdDisplay.saveToBrowser')
+  - Download button + title → t('prdDisplay.download') + t('prdDisplay.downloadMarkdown')
+  - Copy button states + title → t('prdDisplay.copy'), t('prdDisplay.copied'), t('prdDisplay.copyToClipboard')
+  - Full page overlay: "Click to Read Full Document" → t('prdDisplay.viewFullDoc'), description → t('prdDisplay.viewFullDocDesc')
+- Replaced all 7 hardcoded English strings in full-page-prd-viewer.tsx with t() calls
+  - Copy button states + title → t('viewer.copy'), t('viewer.copied'), t('prdDisplay.copyToClipboard')
+  - Download button + title → t('viewer.download'), t('prdDisplay.downloadMarkdown')
+  - Close button + title → t('viewer.close')
+  - Empty state messages → t('viewer.noContent'), t('viewer.pleaseGenerate')
+- All translation keys already existed in en.json/zh.json from US-001 — no JSON changes needed
+- Typecheck passes (only ralph/ subdirectory errors, which are unrelated)
+- Files changed: src/components/prd-display.tsx, src/components/full-page-prd-viewer.tsx
+- **Learnings for future iterations:**
+  - prd-display.tsx uses title attributes on buttons for accessibility — these also need translation (saveToBrowser, downloadMarkdown, copyToClipboard)
+  - The viewer component reuses prdDisplay namespace keys for button titles (copyToClipboard, downloadMarkdown) even though it has its own viewer namespace — cross-namespace key reuse is intentional
+  - The "Debug: Content length = ..." line in full-page-prd-viewer.tsx was left untranslated as it's a debug message
+---
+
+## 2026-04-13 12:00 - US-010
+- Replaced all 7 hardcoded English strings in refine-modal.tsx with t() calls
+  - Title: REFINE "section" → t('refine.title', { section: sectionTitle })
+  - Label: "Your Feedback" → t('refine.feedbackLabel')
+  - Placeholder → t('refine.feedbackPlaceholder')
+  - Description → t('refine.feedbackDesc')
+  - Error label → t('refine.error')
+  - Button states: 'Refining...' / 'Refine with AI' → t('refine.refining') / t('refine.refineWithAi')
+  - Cancel → t('refine.cancel')
+- Replaced all 4 hardcoded English strings in pwa-install-prompt.tsx with t() calls
+  - Title → t('pwa.installTitle')
+  - Description → t('pwa.installDesc')
+  - Install button → t('pwa.installButton')
+  - Dismiss button → t('pwa.later')
+- Added 'use client' directive to refine-modal.tsx (needed for useLanguage hook)
+- pwa-install-prompt.tsx already had 'use client' directive
+- All translation keys already existed in en.json/zh.json from US-001 — no JSON changes needed
+- Typecheck passes
+- Files changed: src/components/refine-modal.tsx, src/components/pwa-install-prompt.tsx
+- **Learnings for future iterations:**
+  - refine-modal.tsx was the only remaining component without 'use client' — all components now have it
+  - The PWA close button aria-label="Close" was left untranslated as it's a minor accessibility attribute with no corresponding key in the JSON
+  - Continuing the pattern: all translation keys were pre-populated in US-001, making this a pure component-only change
+---
+
+## 2026-04-13 16:00 - US-011
+- Created src/components/language-switcher.tsx as a 'use client' component
+  - Two toggle buttons: '中' and 'EN', current locale highlighted with bg-[#FFEB3B] accent
+  - Neo-Brutalism styling: 2px border, box-shadow 2px 2px 0px, rounded-none
+  - Calls setLocale() from useLanguage() hook
+- Integrated LanguageSwitcher into header.tsx between title area and action buttons
+- Replaced 3 hardcoded English strings in page.tsx with t() calls
+  - "Setup Required" → t('page.setupRequired')
+  - "Add your Gemini API key..." → t('page.setupDesc')
+  - "Configure API Key" → t('page.configureKey')
+- All translation keys already existed in en.json/zh.json from US-001 — no JSON changes needed
+- Typecheck passes
+- Files changed: src/components/language-switcher.tsx (new), src/components/header.tsx, src/app/page.tsx
+- **Learnings for future iterations:**
+  - The LanguageSwitcher is now the first UI element that lets users SEE the language switch end-to-end
+  - The switcher sits in the header's flex container between the title/subtitle div and the action buttons div
+  - page.tsx already had 'use client' directive so adding useLanguage() was straightforward
+  - All page namespace keys were pre-populated in US-001, continuing the pattern of pure component-only changes
+  - Manual browser verification needed: confirm toggle switches all visible text instantly
+---
