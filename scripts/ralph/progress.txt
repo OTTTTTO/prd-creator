@@ -249,3 +249,22 @@ Branch: ralph/chinese-i18n
   - The SSR metadata stays as static English defaults for social crawlers; only the client-side experience gets dynamic locale updates (acceptable since this is a SPA-style app)
   - The `seo` namespace in translation files is separate from the `page` namespace — seo keys are for meta tags, page keys are for visible page content
 ---
+
+## 2026-04-14 00:15 - US-015
+- Created src/lib/api-messages.ts with getErrorMessage(key, locale) helper that imports en.json/zh.json directly and returns localized API error strings
+- Added `apiErrors` namespace to en.json and zh.json with 12 keys: apiKeyRequired, invalidPrdInputs, productIdeaRequired, invalidSectionTitle, feedbackRequired, emptyResponseGenerate, emptyResponsePrefill, emptyResponseRefine, unknownErrorGenerate, unknownErrorPrefill, unknownErrorRefine, unknownErrorModels
+- Replaced all hardcoded error strings in 4 API routes with getErrorMessage() calls: generate, prefill, refine, models
+- Refactored all 3 route files (generate, prefill, refine) to extract locale outside try block so it's accessible in catch
+- Updated models/route.ts to accept locale parameter from request body
+- Updated settings-modal.tsx to pass locale in /api/models fetch call
+- Translated offline page: replaced all 12 hardcoded English strings with t() calls using new `offline` namespace
+- Updated public/manifest.json: bilingual description, changed lang from 'en' to 'zh'
+- Typecheck passes
+- Files changed: src/lib/api-messages.ts (new), src/app/api/generate/route.ts, src/app/api/prefill/route.ts, src/app/api/refine/route.ts, src/app/api/models/route.ts, src/app/offline/page.tsx, src/components/settings-modal.tsx, src/locales/en.json, src/locales/zh.json, public/manifest.json
+- **Learnings for future iterations:**
+  - API routes need `let locale` declared before try block if it's used in both try and catch scopes
+  - The getErrorMessage helper imports translation JSON directly (not via useLanguage hook) since API routes are server-side and don't have React context
+  - The models route previously didn't accept locale — added it alongside apiKey in the request body
+  - The offline page already had 'use client' and uses useLanguage() from the LanguageProvider — works because offline/layout.tsx is nested under the root layout which has Providers
+  - PWA manifest doesn't natively support multiple languages — used bilingual description string as a pragmatic solution
+---

@@ -282,7 +282,7 @@
         "Typecheck passes"
       ],
       "priority": 15,
-      "passes": false,
+      "passes": true,
       "notes": "Depends on US-002 and US-013 (API locale pattern). This is the cleanup story — error messages, offline page, and manifest are the last remaining English text."
     }
   ]
