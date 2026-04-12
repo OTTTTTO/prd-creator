@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { MarkdownRenderer } from './markdown-renderer';
 import { X } from 'lucide-react';
+import { useLanguage } from '@/i18n/language-provider';
 
 interface FullPagePRDViewerProps {
   isOpen: boolean;
@@ -76,6 +77,7 @@ export function FullPagePRDViewer({
   productName,
   model
 }: FullPagePRDViewerProps) {
+  const { t } = useLanguage();
   const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
@@ -166,17 +168,17 @@ export function FullPagePRDViewer({
             <button
               onClick={handleCopy}
               className="flex items-center border-[2px] border-black bg-[#2196F3] px-4 py-2 text-sm font-bold tracking-wide text-white uppercase shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] focus:outline-none active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
-              title="Copy to clipboard"
+              title={t('prdDisplay.copyToClipboard')}
             >
               {isCopied ? (
                 <span className="flex items-center">
                   <CheckIcon className="mr-2 h-4 w-4" />
-                  Copied!
+                  {t('viewer.copied')}
                 </span>
               ) : (
                 <span className="flex items-center">
                   <CopyIcon className="mr-2 h-4 w-4" />
-                  Copy
+                  {t('viewer.copy')}
                 </span>
               )}
             </button>
@@ -184,19 +186,19 @@ export function FullPagePRDViewer({
             <button
               onClick={handleDownload}
               className="flex items-center border-[2px] border-black bg-[#4CAF50] px-4 py-2 text-sm font-bold tracking-wide text-white uppercase shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] focus:outline-none active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
-              title="Download as Markdown"
+              title={t('prdDisplay.downloadMarkdown')}
             >
               <DownloadIcon className="mr-2 h-4 w-4" />
-              Download
+              {t('viewer.download')}
             </button>
 
             <button
               onClick={onClose}
               className="flex items-center border-[2px] border-black bg-[#F44336] px-4 py-2 text-sm font-bold tracking-wide text-white uppercase shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] focus:outline-none active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
-              title="Close (Esc)"
+              title={t('viewer.close')}
             >
               <X className="mr-2 h-4 w-4" />
-              Close
+              {t('viewer.close')}
             </button>
           </div>
         </div>
@@ -211,10 +213,10 @@ export function FullPagePRDViewer({
             ) : (
               <div className="py-16 text-center">
                 <p className="text-lg text-gray-500">
-                  No PRD content to display.
+                  {t('viewer.noContent')}
                 </p>
                 <p className="mt-2 text-gray-400">
-                  Please generate a PRD first.
+                  {t('viewer.pleaseGenerate')}
                 </p>
                 <p className="mt-1 text-sm text-gray-300">
                   Debug: Content length = {content?.length || 0}

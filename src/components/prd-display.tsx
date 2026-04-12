@@ -5,6 +5,7 @@ import { MarkdownRenderer } from './markdown-renderer';
 import { saveDraft, StoredDraft } from '@/lib/drafts';
 import { PrdInput } from '@/lib/prd';
 import { Clipboard, CheckCircle, Eye } from 'lucide-react';
+import { useLanguage } from '@/i18n/language-provider';
 
 interface PRDDisplayProps {
   content: string;
@@ -101,6 +102,7 @@ export function PRDDisplay({
   onSaved,
   onFullPageView
 }: PRDDisplayProps) {
+  const { t } = useLanguage();
   const [isCopied, setIsCopied] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -193,11 +195,11 @@ export function PRDDisplay({
         >
           {isLivePreview ? (
             <span className="flex items-center gap-2">
-              <Clipboard className="h-6 w-6" /> LIVE PREVIEW
+              <Clipboard className="h-6 w-6" /> {t('prdDisplay.livePreview')}
             </span>
           ) : (
             <span className="flex items-center gap-2">
-              <CheckCircle className="h-6 w-6" /> GENERATED PRD
+              <CheckCircle className="h-6 w-6" /> {t('prdDisplay.generatedPrd')}
             </span>
           )}
         </h2>
@@ -207,7 +209,7 @@ export function PRDDisplay({
               onClick={handleSave}
               disabled={isSaving || !prdInputs}
               className="flex items-center border-[2px] border-black bg-[#FFEB3B] px-3 py-1 text-xs font-bold tracking-wide text-black uppercase shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] focus:outline-none active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000] disabled:cursor-not-allowed disabled:opacity-50"
-              title="Save to browser storage"
+              title={t('prdDisplay.saveToBrowser')}
             >
               {isSaving ? (
                 <span className="flex items-center">
@@ -231,42 +233,42 @@ export function PRDDisplay({
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Saving...
+                  {t('prdDisplay.saving')}
                 </span>
               ) : isSaved ? (
                 <span className="flex items-center">
                   <CheckIcon className="mr-1 h-3 w-3" />
-                  Saved!
+                  {t('prdDisplay.saved')}
                 </span>
               ) : (
                 <span className="flex items-center">
                   <SaveIcon className="mr-1 h-3 w-3" />
-                  Save
+                  {t('prdDisplay.save')}
                 </span>
               )}
             </button>
             <button
               onClick={handleDownload}
               className="flex items-center border-[2px] border-black bg-[#4CAF50] px-3 py-1 text-xs font-bold tracking-wide text-white uppercase shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] focus:outline-none active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
-              title="Download as Markdown"
+              title={t('prdDisplay.downloadMarkdown')}
             >
               <DownloadIcon className="mr-1 h-3 w-3" />
-              Download
+              {t('prdDisplay.download')}
             </button>
             <button
               onClick={handleCopy}
               className="flex items-center border-[2px] border-black bg-[#2196F3] px-3 py-1 text-xs font-bold tracking-wide text-white uppercase shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] focus:outline-none active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
-              title="Copy to clipboard"
+              title={t('prdDisplay.copyToClipboard')}
             >
               {isCopied ? (
                 <span className="flex items-center">
                   <CheckIcon className="mr-1 h-3 w-3" />
-                  Copied!
+                  {t('prdDisplay.copied')}
                 </span>
               ) : (
                 <span className="flex items-center">
                   <CopyIcon className="mr-1 h-3 w-3" />
-                  Copy
+                  {t('prdDisplay.copy')}
                 </span>
               )}
             </button>
@@ -297,10 +299,10 @@ export function PRDDisplay({
                   "'Big Shoulders Display', 'Impact', 'Arial Black', sans-serif"
               }}
             >
-              Click to Read Full Document
+              {t('prdDisplay.viewFullDoc')}
             </h3>
             <p className="text-center text-sm font-medium text-black transition-transform duration-300 group-hover:scale-105">
-              Open in full page view for better reading experience
+              {t('prdDisplay.viewFullDocDesc')}
             </p>
           </div>
         </div>
