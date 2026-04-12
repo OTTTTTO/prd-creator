@@ -64,7 +64,7 @@ export function PRDWizard({
   const [prefillError, setPrefillError] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [generateError, setGenerateError] = useState<string>('');
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
 
   const steps = [
     {
@@ -157,7 +157,8 @@ export function PRDWizard({
         body: JSON.stringify({
           inputs: inputsWithImages,
           apiKey,
-          model: selectedModel
+          model: selectedModel,
+          locale
         })
       });
 
@@ -363,7 +364,12 @@ export function PRDWizard({
             </Button>
 
             <div className="flex items-center gap-4 text-lg font-bold text-black">
-              <span>{t('wizard.stepOf', { current: currentStep, total: steps.length })}</span>
+              <span>
+                {t('wizard.stepOf', {
+                  current: currentStep,
+                  total: steps.length
+                })}
+              </span>
             </div>
 
             <Button
@@ -436,7 +442,9 @@ export function PRDWizard({
 
             {prefillError && (
               <div className="border-[4px] border-black bg-[#F44336] p-6 text-white shadow-[4px_4px_0px_#000]">
-                <p className="mb-2 font-bold tracking-wide uppercase">{t('wizard.error')}</p>
+                <p className="mb-2 font-bold tracking-wide uppercase">
+                  {t('wizard.error')}
+                </p>
                 <p className="font-medium">{prefillError}</p>
               </div>
             )}
@@ -530,7 +538,9 @@ export function PRDWizard({
 
             {generateError && (
               <div className="border-[4px] border-black bg-[#F44336] p-6 text-white shadow-[4px_4px_0px_#000]">
-                <p className="mb-2 font-bold tracking-wide uppercase">{t('wizard.error')}</p>
+                <p className="mb-2 font-bold tracking-wide uppercase">
+                  {t('wizard.error')}
+                </p>
                 <p className="font-medium">{generateError}</p>
               </div>
             )}

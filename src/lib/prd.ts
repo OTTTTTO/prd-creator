@@ -125,7 +125,7 @@ ${inputs.constraints || '...'}
   `;
 }
 
-export function buildGenerationPrompt(inputs: PrdInput): string {
+export function buildGenerationPrompt(inputs: PrdInput, locale?: string): string {
   // Build image context if images are provided
   let imageContext = '';
   if (inputs.productIdeaImages && inputs.productIdeaImages.length > 0) {
@@ -215,5 +215,6 @@ ${inputs.constraints || 'None specified.'}
 
 *To ensure focus for the initial release, the following items are explicitly out of scope for the MVP:*
 *Based on the core features, define what will NOT be included in the initial release to manage expectations.*
+  ${locale === 'zh' ? '\n\nPlease write the entire PRD in Simplified Chinese (简体中文). All section titles, content, and descriptions must be in Chinese.' : ''}
   `;
 }

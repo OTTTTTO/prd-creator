@@ -37,10 +37,11 @@ function validateInputs(value: unknown): value is PrdInput {
 
 export async function POST(request: NextRequest) {
   try {
-    const { inputs, apiKey, model } = (await request.json()) as {
+    const { inputs, apiKey, model, locale } = (await request.json()) as {
       inputs?: unknown;
       apiKey?: string;
       model?: string;
+      locale?: string;
     };
 
     if (!apiKey || typeof apiKey !== 'string') {
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
     }
 
     const client = new GoogleGenAI({ apiKey });
-    const basePrompt = buildGenerationPrompt(inputs);
+    const basePrompt = buildGenerationPrompt(inputs, locale);
 
     // Add current date/time context to the prompt
     const promptWithContext = getContextHeader() + basePrompt;
