@@ -1,6 +1,9 @@
+'use client';
+
 import { ChangeEvent } from 'react';
 import { Button } from './button';
 import { TextareaField } from './textarea-field';
+import { useLanguage } from '@/i18n/language-provider';
 
 interface RefineModalProps {
   isOpen: boolean;
@@ -23,6 +26,7 @@ export function RefineModal({
   setFeedback,
   error
 }: RefineModalProps) {
+  const { t } = useLanguage();
   if (!isOpen) return null;
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) =>
@@ -60,23 +64,23 @@ export function RefineModal({
                   "'Big Shoulders Display', 'Impact', 'Arial Black', sans-serif"
               }}
             >
-              REFINE &ldquo;{sectionTitle}&rdquo;
+              {t('refine.title', { section: sectionTitle })}
             </h3>
             <div className="mt-4">
               <TextareaField
-                label="Your Feedback"
+                label={t('refine.feedbackLabel')}
                 id="refineFeedback"
                 value={feedback}
                 onChange={handleChange}
-                placeholder={`e.g., "Make the tone more formal" or "Add a feature for social media sharing."`}
+                placeholder={t('refine.feedbackPlaceholder')}
                 rows={4}
-                description="Provide instructions for the AI to edit this section."
+                description={t('refine.feedbackDesc')}
               />
             </div>
             {error ? (
               <div className="mt-4 border-[3px] border-black bg-[#F44336] p-4 text-white shadow-[4px_4px_0px_#000]">
                 <p>
-                  <span className="font-bold uppercase">Error:</span> {error}
+                  <span className="font-bold uppercase">{t('refine.error')}</span> {error}
                 </p>
               </div>
             ) : null}
@@ -91,7 +95,7 @@ export function RefineModal({
             variant="primary"
             className="sm:w-auto"
           >
-            {isLoading ? 'Refining...' : 'Refine with AI'}
+            {isLoading ? t('refine.refining') : t('refine.refineWithAi')}
           </Button>
           <button
             type="button"
@@ -99,7 +103,7 @@ export function RefineModal({
             disabled={isLoading}
             className="inline-flex w-full justify-center border-[3px] border-black bg-white px-6 py-3 font-bold tracking-wide text-black uppercase shadow-[4px_4px_0px_#000] transition-all duration-150 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_#000] disabled:opacity-50 sm:w-auto"
           >
-            Cancel
+            {t('refine.cancel')}
           </button>
         </div>
       </div>

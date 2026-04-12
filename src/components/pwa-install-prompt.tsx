@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Smartphone } from 'lucide-react';
+import { useLanguage } from '@/i18n/language-provider';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -9,6 +10,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export function PWAInstallPrompt() {
+  const { t } = useLanguage();
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
@@ -88,24 +90,23 @@ export function PWAInstallPrompt() {
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="mb-1 text-sm font-semibold text-white">
-              Install AI PRD Creator
+              {t('pwa.installTitle')}
             </h3>
             <p className="mb-3 text-xs text-indigo-100">
-              Install this app on your device for quick access and offline
-              support
+              {t('pwa.installDesc')}
             </p>
             <div className="flex gap-2">
               <button
                 onClick={handleInstallClick}
                 className="rounded-md bg-white px-4 py-2 text-sm font-medium text-indigo-600 transition-colors hover:bg-indigo-50"
               >
-                Install App
+                {t('pwa.installButton')}
               </button>
               <button
                 onClick={handleDismiss}
                 className="rounded-md bg-indigo-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-800"
               >
-                Maybe Later
+                {t('pwa.later')}
               </button>
             </div>
           </div>
