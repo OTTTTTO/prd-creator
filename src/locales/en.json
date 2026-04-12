@@ -168,5 +168,34 @@
     "description": "Turn your ideas into professional Product Requirements Documents instantly with AI",
     "ogTitle": "AI PRD Creator - Generate Professional PRDs Instantly",
     "ogDescription": "Transform your product ideas into comprehensive Product Requirements Documents in minutes with AI-powered assistance. Perfect for product managers, startups, and development teams."
+  },
+  "apiErrors": {
+    "apiKeyRequired": "API key is required.",
+    "invalidPrdInputs": "Invalid PRD inputs provided.",
+    "productIdeaRequired": "Product idea is required.",
+    "invalidSectionTitle": "Invalid section title provided.",
+    "feedbackRequired": "Feedback is required to refine a section.",
+    "emptyResponseGenerate": "Gemini returned an empty response while generating the PRD.",
+    "emptyResponsePrefill": "Gemini returned an empty response while prefilling inputs.",
+    "emptyResponseRefine": "Gemini returned an empty response while refining the section.",
+    "unknownErrorGenerate": "An unknown error occurred while generating the PRD.",
+    "unknownErrorPrefill": "An unknown error occurred while generating PRD inputs.",
+    "unknownErrorRefine": "An unknown error occurred while refining the section.",
+    "unknownErrorModels": "An unknown error occurred while fetching models."
+  },
+  "offline": {
+    "title": "You're Offline",
+    "description": "It looks like you've lost your internet connection. Some features may not be available until you're back online.",
+    "availableOffline": "Available Offline",
+    "viewPrds": "View previously generated PRDs",
+    "accessDrafts": "Access saved drafts",
+    "editFields": "Edit form fields",
+    "requiresInternet": "Requires Internet",
+    "generatePrds": "Generate new PRDs with AI",
+    "refineDocs": "Refine existing documents",
+    "syncCloud": "Sync with cloud",
+    "checking": "Checking Connection...",
+    "tryAgain": "Try Again",
+    "autoRefresh": "This page will automatically refresh when your connection is restored."
   }
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Type, GoogleGenAI } from '@google/genai';
 import { PrdInput, SECTION_FIELD_MAPPING } from '../../../lib/prd';
 import { getContextHeader } from '../_lib/datetime';
+import { getErrorMessage } from '@/lib/api-messages';
 
 function isPrdInput(value: unknown): value is PrdInput {
   if (!value || typeof value !== 'object') {
@@ -34,41 +35,43 @@ function isPrdInput(value: unknown): value is PrdInput {
 }
 
 export async function POST(request: NextRequest) {
+  let locale: string | undefined;
   try {
-    const { currentInputs, sectionTitle, userFeedback, apiKey, model, locale } =
-      (await request.json()) as {
-        currentInputs?: unknown;
-        sectionTitle?: string;
-        userFeedback?: string;
-        apiKey?: string;
-        model?: string;
-        locale?: string;
-      };
+    const body = (await request.json()) as {
+      currentInputs?: unknown;
+      sectionTitle?: string;
+      userFeedback?: string;
+      apiKey?: string;
+      model?: string;
+      locale?: string;
+    };
+    locale = body.locale;
+    const { currentInputs, sectionTitle, userFeedback, apiKey, model } = body;
 
     if (!apiKey || typeof apiKey !== 'string') {
       return NextResponse.json(
-        { error: 'API key is required.' },
+        { error: getErrorMessage('apiKeyRequired', locale) },
         { status: 400 }
       );
     }
 
     if (!sectionTitle || !SECTION_FIELD_MAPPING[sectionTitle]) {
       return NextResponse.json(
-        { error: 'Invalid section title provided.' },
+        { error: getErrorMessage('invalidSectionTitle', locale) },
         { status: 400 }
       );
     }
 
     if (!userFeedback || !userFeedback.trim()) {
       return NextResponse.json(
-        { error: 'Feedback is required to refine a section.' },
+        { error: getErrorMessage('feedbackRequired', locale) },
         { status: 400 }
       );
     }
 
     if (!isPrdInput(currentInputs)) {
       return NextResponse.json(
-        { error: 'Invalid PRD inputs provided.' },
+        { error: getErrorMessage('invalidPrdInputs', locale) },
         { status: 400 }
       );
     }
@@ -97,7 +100,8 @@ Your task is to update the values for the fields in the "${sectionTitle}" sectio
 
     // Add locale instruction for non-English languages
     if (locale === 'zh') {
-      promptWithContext += '\n\nPlease respond in Simplified Chinese (简体中文).';
+      promptWithContext +=
+        '\n\nPlease respond in Simplified Chinese (简体中文).';
     }
 
     const responseSchemaProperties: Record<string, { type: Type.STRING }> = {};
@@ -120,9 +124,7 @@ Your task is to update the values for the fields in the "${sectionTitle}" sectio
 
     const jsonString = response.text?.trim();
     if (!jsonString) {
-      throw new Error(
-        'Gemini returned an empty response while refining the section.'
-      );
+      throw new Error(getErrorMessage('emptyResponseRefine', locale));
     }
 
     const parsed = JSON.parse(jsonString);
@@ -142,7 +144,7 @@ Your task is to update the values for the fields in the "${sectionTitle}" sectio
     const message =
       error instanceof Error
         ? error.message
-        : 'An unknown error occurred while refining the section.';
+        : getErrorMessage('unknownErrorRefine', locale);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

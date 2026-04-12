@@ -1,7 +1,7 @@
 {
   "name": "AI PRD Creator",
   "short_name": "PRD Creator",
-  "description": "Turn your ideas into professional Product Requirements Documents instantly with AI",
+  "description": "AI PRD Creator / AI PRD 生成器 - Turn your ideas into professional PRDs with AI / 借助 AI 将创意转化为专业产品需求文档",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",
@@ -54,7 +54,7 @@
     }
   ],
   "categories": ["productivity", "business", "utilities"],
-  "lang": "en",
+  "lang": "zh",
   "dir": "ltr",
   "prefer_related_applications": false
 }

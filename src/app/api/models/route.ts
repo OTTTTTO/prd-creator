@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getErrorMessage } from '@/lib/api-messages';
 
 interface GoogleModel {
   name: string;
@@ -21,11 +22,11 @@ interface FormattedModel {
 
 export async function POST(request: NextRequest) {
   try {
-    const { apiKey } = (await request.json()) as { apiKey?: string };
+    const { apiKey, locale } = (await request.json()) as { apiKey?: string; locale?: string };
 
     if (!apiKey || typeof apiKey !== 'string') {
       return NextResponse.json(
-        { error: 'API key is required.' },
+        { error: getErrorMessage('apiKeyRequired', locale) },
         { status: 400 }
       );
     }
@@ -169,7 +170,7 @@ export async function POST(request: NextRequest) {
     const message =
       error instanceof Error
         ? error.message
-        : 'An unknown error occurred while fetching models.';
+        : getErrorMessage('unknownErrorModels');
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -34,7 +34,7 @@ export function SettingsModal({
   const [showApiKey, setShowApiKey] = useState(false);
   const [models, setModels] = useState<Model[]>(GEMINI_MODELS);
   const [loadingModels, setLoadingModels] = useState(false);
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [modelsError, setModelsError] = useState('');
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export function SettingsModal({
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ apiKey: key })
+        body: JSON.stringify({ apiKey: key, locale })
       });
 
       if (!response.ok) {
@@ -157,7 +157,8 @@ export function SettingsModal({
                 htmlFor="apiKey"
                 className="mb-3 block text-sm font-bold tracking-wide text-black uppercase"
               >
-                {t('settings.apiKeyLabel')} <span className="text-[#E91E63]">*</span>
+                {t('settings.apiKeyLabel')}{' '}
+                <span className="text-[#E91E63]">*</span>
               </label>
               <div className="relative">
                 <input

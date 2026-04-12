@@ -168,5 +168,34 @@
     "description": "将您的产品创意快速转化为专业的产品需求文档",
     "ogTitle": "AI PRD 生成器 - 专业 AI 产品需求文档生成工具",
     "ogDescription": "借助 AI 驱动的辅助工具，在几分钟内将您的产品创意转化为全面的产品需求文档。专为产品经理、创业团队和开发团队打造。"
+  },
+  "apiErrors": {
+    "apiKeyRequired": "需要 API 密钥。",
+    "invalidPrdInputs": "提供的 PRD 输入无效。",
+    "productIdeaRequired": "需要产品创意。",
+    "invalidSectionTitle": "提供的章节标题无效。",
+    "feedbackRequired": "需要反馈才能优化章节。",
+    "emptyResponseGenerate": "Gemini 在生成 PRD 时返回了空响应。",
+    "emptyResponsePrefill": "Gemini 在预填充输入时返回了空响应。",
+    "emptyResponseRefine": "Gemini 在优化章节时返回了空响应。",
+    "unknownErrorGenerate": "生成 PRD 时发生未知错误。",
+    "unknownErrorPrefill": "生成 PRD 输入时发生未知错误。",
+    "unknownErrorRefine": "优化章节时发生未知错误。",
+    "unknownErrorModels": "获取模型列表时发生未知错误。"
+  },
+  "offline": {
+    "title": "您已离线",
+    "description": "您的网络连接似乎已断开。部分功能在重新连接之前可能无法使用。",
+    "availableOffline": "离线可用功能",
+    "viewPrds": "查看已生成的 PRD",
+    "accessDrafts": "访问已保存的草稿",
+    "editFields": "编辑表单字段",
+    "requiresInternet": "需要网络连接",
+    "generatePrds": "使用 AI 生成新 PRD",
+    "refineDocs": "优化已有文档",
+    "syncCloud": "同步到云端",
+    "checking": "正在检查连接...",
+    "tryAgain": "重试",
+    "autoRefresh": "网络连接恢复后，此页面将自动刷新。"
   }
 }

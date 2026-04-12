@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { buildGenerationPrompt, PrdInput } from '../../../lib/prd';
 import { GoogleGenAI } from '@google/genai';
 import { getContextHeader } from '../_lib/datetime';
+import { getErrorMessage } from '@/lib/api-messages';
 
 function validateInputs(value: unknown): value is PrdInput {
   if (!value || typeof value !== 'object') {
@@ -36,24 +37,27 @@ function validateInputs(value: unknown): value is PrdInput {
 }
 
 export async function POST(request: NextRequest) {
+  let locale: string | undefined;
   try {
-    const { inputs, apiKey, model, locale } = (await request.json()) as {
+    const body = (await request.json()) as {
       inputs?: unknown;
       apiKey?: string;
       model?: string;
       locale?: string;
     };
+    locale = body.locale;
+    const { inputs, apiKey, model } = body;
 
     if (!apiKey || typeof apiKey !== 'string') {
       return NextResponse.json(
-        { error: 'API key is required.' },
+        { error: getErrorMessage('apiKeyRequired', locale) },
         { status: 400 }
       );
     }
 
     if (!validateInputs(inputs)) {
       return NextResponse.json(
-        { error: 'Invalid PRD inputs provided.' },
+        { error: getErrorMessage('invalidPrdInputs', locale) },
         { status: 400 }
       );
     }
@@ -71,9 +75,7 @@ export async function POST(request: NextRequest) {
 
     const text = response.text?.trim();
     if (!text) {
-      throw new Error(
-        'Gemini returned an empty response while generating the PRD.'
-      );
+      throw new Error(getErrorMessage('emptyResponseGenerate', locale));
     }
 
     return NextResponse.json({ data: { prd: text } });
@@ -81,7 +83,7 @@ export async function POST(request: NextRequest) {
     const message =
       error instanceof Error
         ? error.message
-        : 'An unknown error occurred while generating the PRD.';
+        : getErrorMessage('unknownErrorGenerate', locale);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -2,9 +2,11 @@
 
 import { Button } from '@/components/button';
 import { useEffect, useState } from 'react';
+import { useLanguage } from '@/i18n/language-provider';
 
 export default function OfflinePage() {
   const [isRetrying, setIsRetrying] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handleOnline = () => {
@@ -56,34 +58,33 @@ export default function OfflinePage() {
         </div>
 
         <h1 className="mb-4 text-2xl font-bold text-slate-900">
-          You&apos;re Offline
+          {t('offline.title')}
         </h1>
 
         <p className="mb-8 text-slate-600">
-          It looks like you&apos;ve lost your internet connection. Some features
-          may not be available until you&apos;re back online.
+          {t('offline.description')}
         </p>
 
         <div className="space-y-4">
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
             <h2 className="mb-2 font-semibold text-blue-900">
-              Available Offline
+              {t('offline.availableOffline')}
             </h2>
             <ul className="space-y-1 text-sm text-blue-700">
-              <li>&bull; View previously generated PRDs</li>
-              <li>&bull; Access saved drafts</li>
-              <li>&bull; Edit form fields</li>
+              <li>&bull; {t('offline.viewPrds')}</li>
+              <li>&bull; {t('offline.accessDrafts')}</li>
+              <li>&bull; {t('offline.editFields')}</li>
             </ul>
           </div>
 
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
             <h2 className="mb-2 font-semibold text-amber-900">
-              Requires Internet
+              {t('offline.requiresInternet')}
             </h2>
             <ul className="space-y-1 text-sm text-amber-700">
-              <li>&bull; Generate new PRDs with AI</li>
-              <li>&bull; Refine existing documents</li>
-              <li>&bull; Sync with cloud</li>
+              <li>&bull; {t('offline.generatePrds')}</li>
+              <li>&bull; {t('offline.refineDocs')}</li>
+              <li>&bull; {t('offline.syncCloud')}</li>
             </ul>
           </div>
         </div>
@@ -93,11 +94,11 @@ export default function OfflinePage() {
           disabled={isRetrying}
           className="mt-8 w-full"
         >
-          {isRetrying ? 'Checking Connection...' : 'Try Again'}
+          {isRetrying ? t('offline.checking') : t('offline.tryAgain')}
         </Button>
 
         <p className="mt-4 text-xs text-slate-500">
-          This page will automatically refresh when your connection is restored.
+          {t('offline.autoRefresh')}
         </p>
       </div>
     </div>
