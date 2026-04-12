@@ -2,6 +2,7 @@
 
 import { FileText } from 'lucide-react';
 import { useLanguage } from '@/i18n/language-provider';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
 interface HeaderProps {
   onSettingsClick: () => void;
@@ -32,6 +33,8 @@ export function Header({ onSettingsClick, onSavedDraftsClick }: HeaderProps) {
               {t('header.subtitle')}
             </p>
           </div>
+
+          <LanguageSwitcher />
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
