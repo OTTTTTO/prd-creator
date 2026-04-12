@@ -162,5 +162,11 @@
   "loader": {
     "generating": "正在生成 PRD...",
     "thinking": "AI 正在思考，请稍候。"
+  },
+  "seo": {
+    "title": "AI PRD 生成器 - 专业 AI 产品需求文档生成工具",
+    "description": "将您的产品创意快速转化为专业的产品需求文档",
+    "ogTitle": "AI PRD 生成器 - 专业 AI 产品需求文档生成工具",
+    "ogDescription": "借助 AI 驱动的辅助工具，在几分钟内将您的产品创意转化为全面的产品需求文档。专为产品经理、创业团队和开发团队打造。"
   }
 }

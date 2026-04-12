@@ -162,5 +162,11 @@
   "loader": {
     "generating": "Generating your PRD...",
     "thinking": "The AI is thinking. This may take a moment."
+  },
+  "seo": {
+    "title": "AI PRD Creator - Generate Professional PRDs Instantly",
+    "description": "Turn your ideas into professional Product Requirements Documents instantly with AI",
+    "ogTitle": "AI PRD Creator - Generate Professional PRDs Instantly",
+    "ogDescription": "Transform your product ideas into comprehensive Product Requirements Documents in minutes with AI-powered assistance. Perfect for product managers, startups, and development teams."
   }
 }
