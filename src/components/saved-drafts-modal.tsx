@@ -9,6 +9,7 @@ import {
   migrateLocalStorageToIndexedDB
 } from '@/lib/drafts';
 import { Save, Calendar, Bot } from 'lucide-react';
+import { useLanguage } from '@/i18n/language-provider';
 
 interface SavedDraftsModalProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export function SavedDraftsModal({
   onClose,
   onLoadDraft
 }: SavedDraftsModalProps) {
+  const { t, locale } = useLanguage();
   const [drafts, setDrafts] = useState<StoredDraft[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -46,7 +48,7 @@ export function SavedDraftsModal({
 
   const handleDelete = async (id: string, event: React.MouseEvent) => {
     event.stopPropagation();
-    if (!confirm('Are you sure you want to delete this draft?')) {
+    if (!confirm(t('drafts.deleteConfirm'))) {
       return;
     }
 
@@ -67,7 +69,7 @@ export function SavedDraftsModal({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -94,7 +96,7 @@ export function SavedDraftsModal({
                 >
                   <span className="flex items-center gap-2">
                     <Save className="h-5 w-5" />
-                    Saved PRDs
+                    {t('drafts.title')}
                   </span>
                 </Dialog.Title>
                 <Dialog.Close className="text-black transition-colors hover:text-gray-700">
@@ -114,8 +116,7 @@ export function SavedDraftsModal({
                 </Dialog.Close>
               </div>
               <p className="mt-2 text-sm font-medium text-black">
-                {drafts.length} saved PRD{drafts.length !== 1 ? 's' : ''} (max
-                12)
+                {t('drafts.count', { count: drafts.length })}
               </p>
             </div>
 
@@ -124,7 +125,7 @@ export function SavedDraftsModal({
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-12">
                   <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-black border-t-transparent"></div>
-                  <p className="font-bold text-black">Loading drafts...</p>
+                  <p className="font-bold text-black">{t('drafts.loading')}</p>
                 </div>
               ) : drafts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -142,10 +143,10 @@ export function SavedDraftsModal({
                     />
                   </svg>
                   <h3 className="mb-2 text-xl font-bold text-black">
-                    No Saved PRDs
+                    {t('drafts.emptyTitle')}
                   </h3>
                   <p className="font-medium text-gray-600">
-                    Generate and save your first PRD to see it here!
+                    {t('drafts.emptyDesc')}
                   </p>
                 </div>
               ) : (
@@ -181,9 +182,9 @@ export function SavedDraftsModal({
                           onClick={(e) => handleDelete(draft.id, e)}
                           disabled={deletingId === draft.id}
                           className="ml-4 border-[3px] border-black bg-[#F44336] px-3 py-2 text-sm font-bold text-white uppercase shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000] disabled:cursor-not-allowed disabled:opacity-50"
-                          title="Delete draft"
+                          title={t('drafts.deleteTitle')}
                         >
-                          {deletingId === draft.id ? '...' : 'Delete'}
+                          {deletingId === draft.id ? '...' : t('drafts.delete')}
                         </button>
                       </div>
                     </div>
@@ -199,7 +200,7 @@ export function SavedDraftsModal({
                   onClick={onClose}
                   className="border-[3px] border-black bg-white px-6 py-3 font-bold tracking-wide text-black uppercase shadow-[4px_4px_0px_#000] transition-all duration-150 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_#000]"
                 >
-                  Close
+                  {t('drafts.close')}
                 </button>
               </div>
             </div>

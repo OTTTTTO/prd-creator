@@ -105,6 +105,7 @@
     "emptyDesc": "Generate and save your first PRD to see it here!",
     "delete": "Delete",
     "deleteConfirm": "Are you sure you want to delete this draft?",
+    "deleteTitle": "Delete draft",
     "close": "Close"
   },
   "prdDisplay": {

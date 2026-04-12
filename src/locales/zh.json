@@ -105,6 +105,7 @@
     "emptyDesc": "生成并保存您的第一份 PRD，它会显示在这里！",
     "delete": "删除",
     "deleteConfirm": "确定要删除此草稿吗？",
+    "deleteTitle": "删除草稿",
     "close": "关闭"
   },
   "prdDisplay": {
