@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { GEMINI_MODELS } from '@/lib/models';
 import { Settings, Check } from 'lucide-react';
+import { useLanguage } from '@/i18n/language-provider';
 
 interface Model {
   value: string;
@@ -33,6 +34,7 @@ export function SettingsModal({
   const [showApiKey, setShowApiKey] = useState(false);
   const [models, setModels] = useState<Model[]>(GEMINI_MODELS);
   const [loadingModels, setLoadingModels] = useState(false);
+  const { t } = useLanguage();
   const [modelsError, setModelsError] = useState('');
 
   useEffect(() => {
@@ -75,7 +77,7 @@ export function SettingsModal({
         }
       }
     } catch {
-      setModelsError('Could not fetch models. Using default list.');
+      setModelsError(t('settings.modelFetchError'));
       // Fallback to static list
       setModels(GEMINI_MODELS);
     } finally {
@@ -124,13 +126,13 @@ export function SettingsModal({
             >
               <span className="flex items-center gap-2">
                 <Settings className="h-6 w-6" />
-                SETTINGS
+                {t('settings.title')}
               </span>
             </h2>
             <button
               onClick={onClose}
               className="border-[3px] border-black p-2 text-black transition-all duration-150 hover:bg-[#F44336] hover:text-white"
-              aria-label="Close"
+              aria-label={t('settings.close')}
             >
               <svg
                 className="h-6 w-6"
@@ -155,7 +157,7 @@ export function SettingsModal({
                 htmlFor="apiKey"
                 className="mb-3 block text-sm font-bold tracking-wide text-black uppercase"
               >
-                Gemini API Key <span className="text-[#E91E63]">*</span>
+                {t('settings.apiKeyLabel')} <span className="text-[#E91E63]">*</span>
               </label>
               <div className="relative">
                 <input
@@ -163,7 +165,7 @@ export function SettingsModal({
                   id="apiKey"
                   value={apiKey}
                   onChange={handleApiKeyChange}
-                  placeholder="Enter your Gemini API key"
+                  placeholder={t('settings.apiKeyPlaceholder')}
                   className="w-full border-[3px] border-black bg-white px-4 py-3 pr-24 font-medium text-black placeholder-gray-500 shadow-[4px_4px_0px_#000] focus:border-[#2196F3] focus:shadow-[4px_4px_0px_#2196F3] focus:outline-none"
                 />
                 <button
@@ -171,11 +173,11 @@ export function SettingsModal({
                   onClick={() => setShowApiKey(!showApiKey)}
                   className="absolute top-1/2 right-2 -translate-y-1/2 border-[2px] border-black bg-[#FFEB3B] px-3 py-1 text-xs font-bold uppercase transition-colors hover:bg-[#FDD835]"
                 >
-                  {showApiKey ? 'Hide' : 'Show'}
+                  {showApiKey ? t('settings.hide') : t('settings.show')}
                 </button>
               </div>
               <p className="mt-3 text-sm font-medium text-gray-700">
-                Get your API key from{' '}
+                {t('settings.getApiKey')}{' '}
                 <a
                   href="https://aistudio.google.com/apikey"
                   target="_blank"
@@ -194,7 +196,7 @@ export function SettingsModal({
                   htmlFor="model"
                   className="block text-sm font-bold tracking-wide text-black uppercase"
                 >
-                  Model Selection
+                  {t('settings.modelSelection')}
                 </label>
                 {loadingModels && (
                   <span className="flex items-center text-xs font-bold text-[#2196F3] uppercase">
@@ -218,14 +220,14 @@ export function SettingsModal({
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Fetching...
+                    {t('settings.fetching')}
                   </span>
                 )}
                 {!loadingModels && models.length > GEMINI_MODELS.length && (
                   <span className="text-xs font-bold text-[#4CAF50] uppercase">
                     <span className="flex items-center gap-1">
                       <Check className="h-3 w-3" />
-                      {models.length} LOADED
+                      {models.length} {t('settings.loaded')}
                     </span>
                   </span>
                 )}
@@ -256,13 +258,13 @@ export function SettingsModal({
                 </p>
                 {models.find((m) => m.value === model)?.inputTokenLimit && (
                   <p className="text-xs font-medium text-gray-600">
-                    Input limit:{' '}
+                    {t('settings.inputLimit')}{' '}
                     {models
                       .find((m) => m.value === model)
                       ?.inputTokenLimit?.toLocaleString()}{' '}
-                    tokens
+                    {t('settings.tokens')}
                     {models.find((m) => m.value === model)?.outputTokenLimit &&
-                      ` • Output limit: ${models.find((m) => m.value === model)?.outputTokenLimit?.toLocaleString()} tokens`}
+                      ` • ${t('settings.outputLimit')} ${models.find((m) => m.value === model)?.outputTokenLimit?.toLocaleString()} ${t('settings.tokens')}`}
                   </p>
                 )}
               </div>
@@ -286,12 +288,10 @@ export function SettingsModal({
                 </svg>
                 <div>
                   <h4 className="mb-2 text-base font-black text-white uppercase">
-                    Unlimited Token Generation
+                    {t('settings.unlimitedTitle')}
                   </h4>
                   <p className="text-sm font-medium text-white">
-                    Token limits are removed for maximum flexibility. The API
-                    will generate as much content as needed for comprehensive
-                    PRDs.
+                    {t('settings.unlimitedDesc')}
                   </p>
                 </div>
               </div>
@@ -305,13 +305,13 @@ export function SettingsModal({
               disabled={!apiKey.trim()}
               className="flex-1 border-[3px] border-black bg-[#FFEB3B] px-6 py-3 font-bold tracking-wide text-black uppercase shadow-[4px_4px_0px_#000] transition-all duration-150 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_#000] disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-[4px_4px_0px_#000]"
             >
-              Save Settings
+              {t('settings.save')}
             </button>
             <button
               onClick={onClose}
               className="border-[3px] border-black bg-white px-6 py-3 font-bold tracking-wide text-black uppercase shadow-[4px_4px_0px_#000] transition-all duration-150 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_#000]"
             >
-              Cancel
+              {t('settings.cancel')}
             </button>
           </div>
         </div>
