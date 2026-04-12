@@ -1,4 +1,10 @@
+'use client';
+
+import { useLanguage } from '@/i18n/language-provider';
+
 export function Loader() {
+  const { t } = useLanguage();
+
   return (
     <div className="flex flex-col items-center justify-center border-[3px] border-black bg-[#FFEB3B] p-12 shadow-[8px_8px_0px_#000]">
       <svg
@@ -28,10 +34,10 @@ export function Loader() {
             "'Big Shoulders Display', 'Impact', 'Arial Black', sans-serif"
         }}
       >
-        Generating your PRD...
+        {t('loader.generating')}
       </p>
       <p className="mt-2 text-base font-bold text-black">
-        The AI is thinking. This may take a moment.
+        {t('loader.thinking')}
       </p>
     </div>
   );

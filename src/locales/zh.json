@@ -154,7 +154,9 @@
   },
   "common": {
     "generating": "生成中...",
-    "error": "错误："
+    "error": "错误：",
+    "refine": "优化",
+    "refineAriaLabel": "使用 AI 优化「{section}」部分"
   },
   "loader": {
     "generating": "正在生成 PRD...",

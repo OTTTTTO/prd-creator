@@ -154,7 +154,9 @@
   },
   "common": {
     "generating": "Generating...",
-    "error": "Error:"
+    "error": "Error:",
+    "refine": "Refine",
+    "refineAriaLabel": "Refine {section} section with AI"
   },
   "loader": {
     "generating": "Generating your PRD...",

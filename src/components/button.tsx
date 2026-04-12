@@ -1,5 +1,8 @@
+'use client';
+
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 import { clsx } from 'clsx';
+import { useLanguage } from '@/i18n/language-provider';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
@@ -11,7 +14,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export function Button({
   isLoading = false,
-  loadingLabel = 'Generating...',
+  loadingLabel,
   children,
   className = '',
   disabled,
@@ -19,6 +22,8 @@ export function Button({
   size = 'md',
   ...props
 }: ButtonProps) {
+  const { t } = useLanguage();
+  const displayLoadingLabel = loadingLabel ?? t('common.generating');
   const baseStyles =
     'relative inline-flex items-center justify-center font-bold uppercase tracking-wider transition-all duration-150 ease-out focus:outline-none border-black disabled:cursor-not-allowed disabled:opacity-50';
 
@@ -72,7 +77,7 @@ export function Button({
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             />
           </svg>
-          {loadingLabel}
+          {displayLoadingLabel}
         </span>
       ) : (
         children

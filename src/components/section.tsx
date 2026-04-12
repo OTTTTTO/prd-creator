@@ -1,4 +1,7 @@
+'use client';
+
 import { ReactNode } from 'react';
+import { useLanguage } from '@/i18n/language-provider';
 
 interface SectionProps {
   title: string;
@@ -26,6 +29,8 @@ function SparklesIcon({ className }: { className?: string }) {
 }
 
 export function Section({ title, children, onRefine }: SectionProps) {
+  const { t } = useLanguage();
+
   return (
     <div className="border-[3px] border-black bg-white p-4 shadow-[4px_4px_0px_#000]">
       <div className="mb-4 flex items-center justify-between border-b-[2px] border-black pb-2">
@@ -43,10 +48,10 @@ export function Section({ title, children, onRefine }: SectionProps) {
             type="button"
             onClick={onRefine}
             className="flex items-center gap-2 border-[2px] border-black bg-[#E91E63] px-3 py-1 text-xs font-bold tracking-wide text-white uppercase shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] focus:border-[#FFEB3B] focus:outline-none active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
-            aria-label={`Refine ${title} section with AI`}
+            aria-label={t('common.refineAriaLabel', { section: title })}
           >
             <SparklesIcon className="h-3 w-3" />
-            Refine
+            {t('common.refine')}
           </button>
         ) : null}
       </div>
