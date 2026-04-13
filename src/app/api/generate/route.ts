@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { buildGenerationPrompt, PrdInput } from '../../../lib/prd';
-import { GoogleGenAI } from '@google/genai';
 import { getContextHeader } from '../_lib/datetime';
 import { getErrorMessage } from '@/lib/api-messages';
+import { createLanguageModel } from '../_lib/provider-factory';
+import { generateText } from 'ai';
+import type { ProviderConfig } from '@/lib/providers';
 
 function validateInputs(value: unknown): value is PrdInput {
   if (!value || typeof value !== 'object') {
@@ -41,14 +43,13 @@ export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as {
       inputs?: unknown;
-      apiKey?: string;
-      model?: string;
+      provider?: ProviderConfig;
       locale?: string;
     };
     locale = body.locale;
-    const { inputs, apiKey, model } = body;
+    const { inputs, provider } = body;
 
-    if (!apiKey || typeof apiKey !== 'string') {
+    if (!provider) {
       return NextResponse.json(
         { error: getErrorMessage('apiKeyRequired', locale) },
         { status: 400 }
@@ -62,15 +63,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const client = new GoogleGenAI({ apiKey });
+    const model = createLanguageModel(provider);
     const basePrompt = buildGenerationPrompt(inputs, locale);
 
     // Add current date/time context to the prompt
     const promptWithContext = getContextHeader() + basePrompt;
 
-    const response = await client.models.generateContent({
-      model: model || 'gemini-flash-latest',
-      contents: promptWithContext
+    const response = await generateText({
+      model,
+      prompt: promptWithContext
     });
 
     const text = response.text?.trim();
