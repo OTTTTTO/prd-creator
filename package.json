@@ -11,8 +11,11 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.62",
+    "@ai-sdk/openai": "^3.0.52",
     "@google/genai": "^1.21.0",
     "@radix-ui/react-dialog": "^1.1.4",
+    "ai": "^6.0.158",
     "clsx": "^2.1.1",
     "idb": "^8.0.3",
     "lucide-react": "^0.544.0",

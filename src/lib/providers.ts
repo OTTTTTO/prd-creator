@@ -37,7 +37,10 @@ export const PROVIDER_STORAGE_KEY = 'provider_config';
  * Pre-configured provider presets.
  * These are used in the Settings UI to quickly populate provider configurations.
  */
-export const PRESET_PROVIDERS: Record<string, Omit<ProviderConfig, 'apiKey'>> = {
+export const PRESET_PROVIDERS: Record<
+  string,
+  Omit<ProviderConfig, 'apiKey'>
+> = {
   /** Google Gemini (default provider) */
   gemini: {
     type: 'gemini',
@@ -91,7 +94,9 @@ export const DEFAULT_PROVIDER: ProviderConfig = {
  * Validates a provider configuration.
  * Returns true if the configuration has all required fields with valid values.
  */
-export function isValidProviderConfig(config: unknown): config is ProviderConfig {
+export function isValidProviderConfig(
+  config: unknown
+): config is ProviderConfig {
   if (typeof config !== 'object' || config === null) {
     return false;
   }
