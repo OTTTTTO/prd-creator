@@ -79,8 +79,11 @@
   },
   "settings": {
     "title": "设置",
-    "apiKeyLabel": "Gemini API 密钥",
-    "apiKeyPlaceholder": "输入您的 Gemini API 密钥",
+    "provider": "AI 提供商",
+    "apiKeyLabel": "API 密钥",
+    "apiKeyPlaceholder": "输入您的 API 密钥",
+    "baseUrl": "Base URL",
+    "baseUrlPlaceholder": "https://api.example.com/v1",
     "getApiKey": "获取 API 密钥：",
     "modelSelection": "模型选择",
     "fetching": "获取中...",
@@ -95,7 +98,16 @@
     "cancel": "取消",
     "show": "显示",
     "hide": "隐藏",
-    "close": "关闭"
+    "close": "关闭",
+    "providerPresets": {
+      "gemini": "Gemini",
+      "openai": "OpenAI",
+      "deepseek": "DeepSeek",
+      "ollama": "Ollama",
+      "custom": "自定义"
+    },
+    "customProvider": "自定义提供商",
+    "envPreset": "环境变量默认"
   },
   "drafts": {
     "title": "已保存的 PRD",

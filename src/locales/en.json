@@ -79,8 +79,11 @@
   },
   "settings": {
     "title": "SETTINGS",
-    "apiKeyLabel": "Gemini API Key",
-    "apiKeyPlaceholder": "Enter your Gemini API key",
+    "provider": "AI Provider",
+    "apiKeyLabel": "API Key",
+    "apiKeyPlaceholder": "Enter your API key",
+    "baseUrl": "Base URL",
+    "baseUrlPlaceholder": "https://api.example.com/v1",
     "getApiKey": "Get your API key from",
     "modelSelection": "Model Selection",
     "fetching": "Fetching...",
@@ -95,7 +98,16 @@
     "cancel": "Cancel",
     "show": "Show",
     "hide": "Hide",
-    "close": "Close"
+    "close": "Close",
+    "providerPresets": {
+      "gemini": "Gemini",
+      "openai": "OpenAI",
+      "deepseek": "DeepSeek",
+      "ollama": "Ollama",
+      "custom": "Custom"
+    },
+    "customProvider": "Custom Provider",
+    "envPreset": "Environment Default"
   },
   "drafts": {
     "title": "Saved PRDs",
