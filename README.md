@@ -1,6 +1,6 @@
 # 📝 AI PRD Creator
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-success?style=for-the-badge&logo=vercel)](https://ai-prd-creator.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-success?style=for-the-badge&logo=vercel)](https://prd.aineedjob.com)
 [![Next.js](https://img.shields.io/badge/Next.js-15.5.4-black?style=flat&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1.14-38B2AC?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
@@ -8,12 +8,15 @@
 
 An intelligent Product Requirements Document (PRD) generator powered by Google's Gemini AI. Transform your product ideas into comprehensive, professional PRDs in minutes with a beautiful Compact Neo-Brutalism design that features refined borders, optimized shadows, and efficient layouts.
 
-🌐 **Live Demo**: [https://ai-prd-creator.vercel.app/](https://ai-prd-creator.vercel.app/)
+🌐 **Live Demo**: [https://prd.aineedjob.com](https://prd.aineedjob.com)
+
+**Language**: English | [简体中文](README_zh.md)
 
 ## ✨ Features
 
 ### 🎯 Core Functionality
 
+- **🌍 Chinese/English Bilingual UI**: Instant language switching with toggle button (中/EN), persistent language preference
 - **🧙‍♂️ 3-Step Wizard Flow**: Guided wizard interface (Input → Generate → Review) for streamlined PRD creation
 - **🚀 Quick Start with AI**: Describe your product idea in plain text and let AI auto-fill the entire form
 - **📋 Structured Form Input**: Organized sections for all essential PRD components (9 sections including tech stack and constraints)
@@ -23,6 +26,13 @@ An intelligent Product Requirements Document (PRD) generator powered by Google's
 - **💾 Advanced Draft Management**: Save and manage up to 12 PRD drafts with IndexedDB, localStorage fallback, and migration support
 - **🔄 Draft Loading**: Load saved drafts with automatic state restoration and context preservation
 - **📱 Enhanced PWA**: Full Progressive Web App support with install prompts and offline capabilities
+
+### 🌐 Internationalization
+
+- **🌍 Chinese/English Bilingual**: Full bilingual support with instant language switching between Chinese (简体中文) and English
+- **🎯 AI Language-Aware Generation**: PRD content generated in Chinese when Chinese UI is selected, English when English UI is selected
+- **💾 Persistent Language Preference**: Language choice saved automatically, restored on next visit
+- **🔤 SEO Multi-Language Support**: Page metadata and social sharing tags adapt to selected language
 
 ### 🎨 Design & UX
 
@@ -35,6 +45,7 @@ An intelligent Product Requirements Document (PRD) generator powered by Google's
 
 ### 🤖 AI Capabilities
 
+- **🌐 Language-Aware Generation**: AI generates PRD content in Chinese when Chinese UI is selected, English when English UI is selected
 - **🔄 Dynamic Model Selection**: Choose from 40+ Gemini models
 - **📡 Live Model Fetching**: Auto-updates with latest models from Google
 - **🎛️ Flexible Configuration**: Customize API key and model preferences
@@ -47,6 +58,7 @@ An intelligent Product Requirements Document (PRD) generator powered by Google's
 - **Framework**: [Next.js 15.5.4](https://nextjs.org/) with App Router
 - **Language**: [TypeScript 5.9.2](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS 4.1.14](https://tailwindcss.com/) with Compact Neo-Brutalism design system
+- **i18n**: [next-intl](https://next-intl-docs.vercel.app/) for Chinese/English bilingual support
 - **AI**: [Google Gemini API](https://ai.google.dev/) (@google/genai v1.21.0)
 - **UI Components**: [Radix UI](https://www.radix-ui.com/) primitives for accessibility (Dialog, Scroll Area, Tabs, Tooltip)
 - **Storage**: IndexedDB with idb library v8.0.3 for saved drafts (12-draft limit with auto-migration)
@@ -59,7 +71,7 @@ An intelligent Product Requirements Document (PRD) generator powered by Google's
 
 ### Option 1: Use the Live Demo (Recommended)
 
-No installation needed! Just visit [https://ai-prd-creator.vercel.app/](https://ai-prd-creator.vercel.app/) and:
+No installation needed! Just visit [https://prd.aineedjob.com](https://prd.aineedjob.com) and:
 
 1. Click the ⚙️ settings icon
 2. Enter your Gemini API key ([Get one here](https://aistudio.google.com/apikey))
@@ -236,6 +248,7 @@ prd-creator/
 │   │   └── globals.css                  # Global styles
 │   ├── components/
 │   │   ├── button.tsx                   # Reusable button component
+│   │   ├── language-switcher.tsx        # Chinese/English language toggle
 │   │   ├── footer.tsx                   # App footer with copyright
 │   │   ├── full-page-prd-viewer.tsx     # Full-screen PRD viewer
 │   │   ├── header.tsx                   # Header with settings/drafts
@@ -251,7 +264,15 @@ prd-creator/
 │   │   ├── section.tsx                  # Form section wrapper
 │   │   ├── settings-modal.tsx           # API key & model settings
 │   │   └── textarea-field.tsx           # Multi-line input
+│   ├── i18n/
+│   │   ├── config.ts                    # i18n configuration (locales)
+│   │   ├── language-provider.tsx        # React context for language state
+│   │   └── use-document-metadata.ts     # SEO metadata hook
+│   ├── locales/
+│   │   ├── en.json                      # English translations
+│   │   └── zh.json                      # Chinese translations
 │   ├── lib/
+│   │   ├── api-messages.ts              # Localized API error messages
 │   │   ├── drafts.ts                    # IndexedDB draft management
 │   │   ├── download.ts                  # File download utilities
 │   │   ├── ingest.ts                    # Data ingestion helpers
@@ -324,7 +345,8 @@ Auto-fills form from a product idea description.
 {
   apiKey: string,
   model: string,
-  productIdea: string
+  productIdea: string,
+  locale?: 'zh' | 'en'  // Optional: language preference
 }
 ```
 
@@ -356,6 +378,7 @@ Generates a complete PRD from structured inputs.
 {
   apiKey: string,
   model: string,
+  locale?: 'zh' | 'en',  // Optional: language preference
   inputs: {
     productName: string,
     targetAudience: string,
@@ -613,7 +636,7 @@ NEXT_PUBLIC_GEMINI_API_KEY=your_key_here
 
 ### Desktop
 
-1. Visit [https://ai-prd-creator.vercel.app/](https://ai-prd-creator.vercel.app/)
+1. Visit [https://prd.aineedjob.com](https://prd.aineedjob.com)
 2. Look for install icon in address bar (⊕)
 3. Click "Install" or use settings button
 4. App opens in standalone window
@@ -661,6 +684,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🙏 Acknowledgments
 
 - **AI**: Powered by [Google Gemini AI](https://ai.google.dev/)
+- **i18n**: [next-intl](https://next-intl-docs.vercel.app/) for bilingual support
 - **Framework**: Built with [Next.js](https://nextjs.org/) 15.5.4 and React 19
 - **UI Components**: [Radix UI](https://www.radix-ui.com/) primitives
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) v4 with Compact Neo-Brutalism
@@ -671,12 +695,13 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🌐 Live Demo
 
-**Visit**: [https://ai-prd-creator.vercel.app/](https://ai-prd-creator.vercel.app/)
+**Visit**: [https://prd.aineedjob.com](https://prd.aineedjob.com)
 
 **Features to Try:**
 
-1. ⚙️ Configure your API key (free from Google AI Studio)
-2. 🧙‍♂️ Follow the 3-step wizard (Input → Generate → Review)
+1. 🌍 Switch between Chinese (中文) and English using the language toggle
+2. ⚙️ Configure your API key (free from Google AI Studio)
+3. 🧙‍♂️ Follow the 3-step wizard (Input → Generate → Review)
 3. 🚀 Use Quick Start to auto-fill a form
 4. 🤖 Generate comprehensive PRD with AI
 5. 🔍 View PRD in full-page viewer
