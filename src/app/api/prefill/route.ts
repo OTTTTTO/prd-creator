@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Type, GoogleGenAI } from '@google/genai';
 import { DEFAULT_PRD_INPUT, PrdInput } from '../../../lib/prd';
 import { getContextHeader } from '../_lib/datetime';
 import { getErrorMessage } from '@/lib/api-messages';
+import { createLanguageModel } from '../_lib/provider-factory';
+import { generateText } from 'ai';
+import type { ProviderConfig } from '@/lib/providers';
 
 export async function POST(request: NextRequest) {
   let locale: string | undefined;
@@ -16,14 +18,13 @@ export async function POST(request: NextRequest) {
         size: number;
         data: string;
       }>;
-      apiKey?: string;
-      model?: string;
+      provider?: ProviderConfig;
       locale?: string;
     };
     locale = body.locale;
-    const { productIdea, images, apiKey, model } = body;
+    const { productIdea, images, provider } = body;
 
-    if (!apiKey || typeof apiKey !== 'string') {
+    if (!provider) {
       return NextResponse.json(
         { error: getErrorMessage('apiKeyRequired', locale) },
         { status: 400 }
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const client = new GoogleGenAI({ apiKey });
+    const model = createLanguageModel(provider);
 
     // Build image context if images are provided
     let imageContext = '';
@@ -52,11 +53,33 @@ export async function POST(request: NextRequest) {
         "\n\nPlease consider these visual materials when analyzing the product idea. They may contain mockups, wireframes, diagrams, or reference photos that provide additional context about the user's vision.";
     }
 
+    // JSON schema for the response
+    const jsonSchema = `{
+  "type": "object",
+  "properties": {
+    "productName": { "type": "string" },
+    "targetAudience": { "type": "string" },
+    "problemStatement": { "type": "string" },
+    "proposedSolution": { "type": "string" },
+    "coreFeatures": { "type": "string" },
+    "keyFeatures": { "type": "string" },
+    "businessGoals": { "type": "string" },
+    "successMetrics": { "type": "string" },
+    "futureFeatures": { "type": "string" },
+    "techStack": { "type": "string" },
+    "constraints": { "type": "string" }
+  },
+  "required": ["productName", "targetAudience", "problemStatement", "proposedSolution", "coreFeatures", "keyFeatures", "businessGoals", "successMetrics"]
+}`;
+
     const basePrompt = `You are a brilliant product strategist. A user has provided a high-level product idea. Your task is to analyze this idea and break it down into the foundational components of a Product Requirements Document. Based on the idea, generate a plausible product name, identify a specific target audience, formulate a clear problem statement and a corresponding solution, brainstorm core features for an MVP, identify key differentiating features, suggest business goals and specific success metrics (KPIs), and recommend future features and tech stack.
 
 User's Idea: "${productIdea}"${imageContext}
 
-Return the response as a JSON object that strictly adheres to the provided schema. For features, use bullet points within the string. For success metrics, include specific, measurable KPIs with targets where appropriate.`;
+IMPORTANT: You must respond with a valid JSON object that strictly adheres to this schema:
+${jsonSchema}
+
+For features, use bullet points within the string. For success metrics, include specific, measurable KPIs with targets where appropriate. Return ONLY the JSON object, no additional text.`;
 
     // Add current date/time context to the prompt
     let promptWithContext = getContextHeader() + basePrompt;
@@ -67,38 +90,9 @@ Return the response as a JSON object that strictly adheres to the provided schem
         '\n\nPlease respond in Simplified Chinese (简体中文).';
     }
 
-    const response = await client.models.generateContent({
-      model: model || 'gemini-flash-latest',
-      contents: promptWithContext,
-      config: {
-        responseMimeType: 'application/json',
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            productName: { type: Type.STRING },
-            targetAudience: { type: Type.STRING },
-            problemStatement: { type: Type.STRING },
-            proposedSolution: { type: Type.STRING },
-            coreFeatures: { type: Type.STRING },
-            keyFeatures: { type: Type.STRING },
-            businessGoals: { type: Type.STRING },
-            successMetrics: { type: Type.STRING },
-            futureFeatures: { type: Type.STRING },
-            techStack: { type: Type.STRING },
-            constraints: { type: Type.STRING }
-          },
-          required: [
-            'productName',
-            'targetAudience',
-            'problemStatement',
-            'proposedSolution',
-            'coreFeatures',
-            'keyFeatures',
-            'businessGoals',
-            'successMetrics'
-          ]
-        }
-      }
+    const response = await generateText({
+      model,
+      prompt: promptWithContext
     });
 
     const jsonString = response.text?.trim();
@@ -106,7 +100,19 @@ Return the response as a JSON object that strictly adheres to the provided schem
       throw new Error(getErrorMessage('emptyResponsePrefill', locale));
     }
 
-    const parsed = JSON.parse(jsonString);
+    // Parse JSON, handling potential markdown code blocks
+    let cleanedJson = jsonString;
+    if (cleanedJson.startsWith('```json')) {
+      cleanedJson = cleanedJson.slice(7);
+    } else if (cleanedJson.startsWith('```')) {
+      cleanedJson = cleanedJson.slice(3);
+    }
+    if (cleanedJson.endsWith('```')) {
+      cleanedJson = cleanedJson.slice(0, -3);
+    }
+    cleanedJson = cleanedJson.trim();
+
+    const parsed = JSON.parse(cleanedJson);
     const result: PrdInput = {
       productName: parsed.productName || DEFAULT_PRD_INPUT.productName,
       targetAudience: parsed.targetAudience || DEFAULT_PRD_INPUT.targetAudience,
