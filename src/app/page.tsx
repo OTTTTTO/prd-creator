@@ -11,17 +11,18 @@ import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
 import { SavedDraftsModal } from '@/components/saved-drafts-modal';
 import { StoredDraft } from '@/lib/drafts';
 import { useLanguage } from '@/i18n/language-provider';
+import {
+  ProviderConfig,
+  PROVIDER_STORAGE_KEY,
+  DEFAULT_PROVIDER,
+  isValidProviderConfig
+} from '@/lib/providers';
 
 export default function Home() {
   const { t } = useLanguage();
 
   // Settings state
-  const [apiKey, setApiKey] = useState<string>('');
-  const [selectedModel, setSelectedModel] = useState<string>(
-    'gemini-flash-latest'
-  );
-  const [modelDisplayName, setModelDisplayName] =
-    useState<string>('Gemini 2.5 Flash');
+  const [provider, setProvider] = useState<ProviderConfig>(DEFAULT_PROVIDER);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [showSetupPrompt, setShowSetupPrompt] = useState<boolean>(false);
   const [isSavedDraftsOpen, setIsSavedDraftsOpen] = useState<boolean>(false);
@@ -32,49 +33,32 @@ export default function Home() {
 
   // Load settings from localStorage on mount
   useEffect(() => {
-    const storedApiKey = localStorage.getItem('gemini_api_key');
-    const storedModel = localStorage.getItem('gemini_model');
-    const storedModelDisplayName = localStorage.getItem(
-      'gemini_model_display_name'
-    );
+    const storedConfig = localStorage.getItem(PROVIDER_STORAGE_KEY);
+    let hasApiKey = false;
+    let providerType: 'gemini' | 'openai' | 'custom' = 'gemini';
 
-    if (storedApiKey) {
-      setApiKey(storedApiKey);
-    } else {
+    if (storedConfig) {
+      try {
+        const config: ProviderConfig = JSON.parse(storedConfig);
+        if (isValidProviderConfig(config)) {
+          setProvider(config);
+          hasApiKey = !!config.apiKey;
+          providerType = config.type;
+        }
+      } catch {
+        // Use default provider
+      }
+    }
+
+    // Check if API key is configured (Ollama doesn't require one)
+    if (!hasApiKey && providerType !== 'custom') {
       setShowSetupPrompt(true);
-    }
-
-    if (storedModel) {
-      setSelectedModel(storedModel);
-    } else {
-      // Set default to gemini-flash-latest
-      setSelectedModel('gemini-flash-latest');
-    }
-
-    if (storedModelDisplayName) {
-      setModelDisplayName(storedModelDisplayName);
     }
   }, []);
 
-  useEffect(() => {
-    if (apiKey) {
-      localStorage.setItem('gemini_api_key', apiKey);
-    }
-  }, [apiKey]);
-
-  useEffect(() => {
-    localStorage.setItem('gemini_model', selectedModel);
-    localStorage.setItem('gemini_model_display_name', modelDisplayName);
-  }, [selectedModel, modelDisplayName]);
-
-  const handleSaveSettings = (
-    newApiKey: string,
-    newModel: string,
-    newModelDisplayName?: string
-  ) => {
-    setApiKey(newApiKey);
-    setSelectedModel(newModel);
-    setModelDisplayName(newModelDisplayName || newModel);
+  const handleSaveSettings = (newProvider: ProviderConfig) => {
+    setProvider(newProvider);
+    localStorage.setItem(PROVIDER_STORAGE_KEY, JSON.stringify(newProvider));
     setIsSettingsOpen(false);
     setShowSetupPrompt(false);
   };
@@ -84,7 +68,6 @@ export default function Home() {
   const handleLoadDraft = (draft: StoredDraft) => {
     setPrdInput(draft.inputs);
     setGeneratedPrd(draft.markdown);
-    setSelectedModel(draft.model);
     setCurrentStep(3); // Switch to step 3 to show the loaded PRD
   };
 
@@ -147,9 +130,7 @@ export default function Home() {
           {/* Main Content - Wizard Only */}
           <div className="mx-auto max-w-6xl">
             <PRDWizard
-              apiKey={apiKey}
-              selectedModel={selectedModel}
-              modelDisplayName={modelDisplayName}
+              provider={provider}
               currentStep={currentStep}
               setCurrentStep={setCurrentStep}
               generatedPrd={generatedPrd}
@@ -172,8 +153,7 @@ export default function Home() {
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         onSave={handleSaveSettings}
-        currentApiKey={apiKey}
-        currentModel={selectedModel}
+        currentProvider={provider}
       />
 
       {/* PWA Install Prompt */}
@@ -192,7 +172,7 @@ export default function Home() {
         onClose={() => setIsFullPageViewOpen(false)}
         content={generatedPrd}
         productName={prdInput.productName || 'PRD'}
-        model={selectedModel}
+        model={provider.model}
       />
     </div>
   );

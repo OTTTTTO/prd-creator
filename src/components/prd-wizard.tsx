@@ -10,6 +10,7 @@ import {
   Camera
 } from 'lucide-react';
 import { PrdInput, DEFAULT_PRD_INPUT, ImageAttachment } from '@/lib/prd';
+import { ProviderConfig } from '@/lib/providers';
 import { Button } from './button';
 import { Loader } from './loader';
 import { TextareaField } from './textarea-field';
@@ -18,9 +19,7 @@ import ImageAttachmentComponent from './image-attachment';
 import { useLanguage } from '@/i18n/language-provider';
 
 interface PRDWizardProps {
-  apiKey: string;
-  selectedModel: string;
-  modelDisplayName: string;
+  provider: ProviderConfig;
   onGeneratedPRD: (prd: string, inputs: PrdInput) => void;
   onFullPageView?: () => void;
   currentStep?: 1 | 2 | 3;
@@ -31,9 +30,7 @@ interface PRDWizardProps {
 }
 
 export function PRDWizard({
-  apiKey,
-  selectedModel,
-  modelDisplayName,
+  provider,
   onGeneratedPRD,
   onFullPageView,
   currentStep: externalCurrentStep,
@@ -113,8 +110,7 @@ export function PRDWizard({
         body: JSON.stringify({
           productIdea: productIdea.trim(),
           images: imageData,
-          apiKey,
-          model: selectedModel,
+          provider,
           locale
         })
       });
@@ -157,8 +153,7 @@ export function PRDWizard({
         },
         body: JSON.stringify({
           inputs: inputsWithImages,
-          apiKey,
-          model: selectedModel,
+          provider,
           locale
         })
       });
@@ -343,7 +338,7 @@ export function PRDWizard({
                 {t('wizard.currentlyUsing')}
               </p>
               <p className="text-sm font-black">
-                {modelDisplayName || selectedModel}
+                {provider.displayName || provider.model}
               </p>
             </div>
           </div>
@@ -577,7 +572,7 @@ export function PRDWizard({
                 content={generatedPrd}
                 productName={prdInput.productName || 'PRD'}
                 prdInputs={prdInput}
-                model={selectedModel}
+                model={provider.model}
                 onFullPageView={handleFullPageView}
               />
             )}
