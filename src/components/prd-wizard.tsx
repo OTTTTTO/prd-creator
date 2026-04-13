@@ -16,6 +16,7 @@ import { Loader } from './loader';
 import { TextareaField } from './textarea-field';
 import { PRDDisplay } from './prd-display';
 import ImageAttachmentComponent from './image-attachment';
+import { RefineModal } from './refine-modal';
 import { useLanguage } from '@/i18n/language-provider';
 
 interface PRDWizardProps {
@@ -62,6 +63,13 @@ export function PRDWizard({
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [generateError, setGenerateError] = useState<string>('');
   const { t, locale } = useLanguage();
+
+  // Refine modal state
+  const [isRefineModalOpen, setIsRefineModalOpen] = useState<boolean>(false);
+  const [refineSectionTitle, setRefineSectionTitle] = useState<string>('');
+  const [refineFeedback, setRefineFeedback] = useState<string>('');
+  const [isRefining, setIsRefining] = useState<boolean>(false);
+  const [refineError, setRefineError] = useState<string>('');
 
   const steps = [
     {
@@ -175,6 +183,55 @@ export function PRDWizard({
       );
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const handleRefineSection = (sectionTitle: string) => {
+    setRefineSectionTitle(sectionTitle);
+    setRefineFeedback('');
+    setRefineError('');
+    setIsRefineModalOpen(true);
+  };
+
+  const handleRefineSubmit = async () => {
+    if (!refineFeedback.trim()) return;
+
+    setIsRefining(true);
+    setRefineError('');
+
+    try {
+      const response = await fetch('/api/refine', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          currentInputs: prdInput,
+          sectionTitle: refineSectionTitle,
+          userFeedback: refineFeedback.trim(),
+          provider,
+          locale
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to refine section');
+      }
+
+      const { data } = await response.json();
+      // Update the prdInput with the refined data
+      setInternalPrdInput((previous) => ({ ...previous, ...data }));
+      setIsRefineModalOpen(false);
+      setRefineFeedback('');
+    } catch (err) {
+      setRefineError(
+        err instanceof Error
+          ? err.message
+          : 'An error occurred while refining the section.'
+      );
+    } finally {
+      setIsRefining(false);
     }
   };
 
@@ -467,8 +524,22 @@ export function PRDWizard({
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="space-y-6">
+            {/* Section 1: Core Product Idea */}
+            <div className="rounded-lg border-[3px] border-black bg-white p-6 shadow-[4px_4px_0px_#000]">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-xl font-bold tracking-wide text-black uppercase">
+                  1. Core Product Idea
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => handleRefineSection('1. Core Product Idea')}
+                  className="flex items-center gap-2 border-[2px] border-black bg-[#E91E63] px-4 py-2 text-sm font-bold uppercase text-white shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
+                >
+                  <Edit3 className="h-4 w-4" />
+                  {t('refine.refineWithAi')}
+                </button>
+              </div>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
                   <label className="mb-2 block text-sm font-bold tracking-wide text-black uppercase">
                     {t('wizard.productName')}
@@ -483,53 +554,98 @@ export function PRDWizard({
                     placeholder={t('wizard.productNamePlaceholder')}
                   />
                 </div>
-
-                <TextareaField
-                  label={t('wizard.problemStatement')}
-                  id="problemStatement"
-                  name="problemStatement"
-                  value={prdInput.problemStatement}
-                  onChange={handleChange}
-                  placeholder={t('wizard.problemStatementPlaceholder')}
-                  rows={6}
-                />
+                <div>
+                  <TextareaField
+                    label={t('wizard.problemStatement')}
+                    id="problemStatement"
+                    name="problemStatement"
+                    value={prdInput.problemStatement}
+                    onChange={handleChange}
+                    placeholder={t('wizard.problemStatementPlaceholder')}
+                    rows={6}
+                  />
+                </div>
               </div>
+            </div>
 
-              <div className="space-y-6">
-                <TextareaField
-                  label={t('wizard.targetAudience')}
-                  id="targetAudience"
-                  name="targetAudience"
-                  value={prdInput.targetAudience}
-                  onChange={handleChange}
-                  placeholder={t('wizard.targetAudiencePlaceholder')}
-                  rows={6}
-                />
-
-                <TextareaField
-                  label={t('wizard.keyFeatures')}
-                  id="keyFeatures"
-                  name="keyFeatures"
-                  value={prdInput.keyFeatures}
-                  onChange={handleChange}
-                  placeholder={t('wizard.keyFeaturesPlaceholder')}
-                  rows={6}
-                  description={t('wizard.keyFeaturesDesc')}
-                />
+            {/* Section 2: Audience & Market */}
+            <div className="rounded-lg border-[3px] border-black bg-white p-6 shadow-[4px_4px_0px_#000]">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-xl font-bold tracking-wide text-black uppercase">
+                  2. Audience & Market
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => handleRefineSection('2. Audience & Market')}
+                  className="flex items-center gap-2 border-[2px] border-black bg-[#E91E63] px-4 py-2 text-sm font-bold uppercase text-white shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
+                >
+                  <Edit3 className="h-4 w-4" />
+                  {t('refine.refineWithAi')}
+                </button>
               </div>
+              <TextareaField
+                label={t('wizard.targetAudience')}
+                id="targetAudience"
+                name="targetAudience"
+                value={prdInput.targetAudience}
+                onChange={handleChange}
+                placeholder={t('wizard.targetAudiencePlaceholder')}
+                rows={6}
+              />
+            </div>
 
-              <div className="md:col-span-2">
-                <TextareaField
-                  label={t('wizard.successMetrics')}
-                  id="successMetrics"
-                  name="successMetrics"
-                  value={prdInput.successMetrics}
-                  onChange={handleChange}
-                  placeholder={t('wizard.successMetricsPlaceholder')}
-                  rows={4}
-                  description={t('wizard.successMetricsDesc')}
-                />
+            {/* Section 3: Features & Scope */}
+            <div className="rounded-lg border-[3px] border-black bg-white p-6 shadow-[4px_4px_0px_#000]">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-xl font-bold tracking-wide text-black uppercase">
+                  3. Features & Scope
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => handleRefineSection('3. Features & Scope')}
+                  className="flex items-center gap-2 border-[2px] border-black bg-[#E91E63] px-4 py-2 text-sm font-bold uppercase text-white shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
+                >
+                  <Edit3 className="h-4 w-4" />
+                  {t('refine.refineWithAi')}
+                </button>
               </div>
+              <TextareaField
+                label={t('wizard.keyFeatures')}
+                id="keyFeatures"
+                name="keyFeatures"
+                value={prdInput.keyFeatures}
+                onChange={handleChange}
+                placeholder={t('wizard.keyFeaturesPlaceholder')}
+                rows={6}
+                description={t('wizard.keyFeaturesDesc')}
+              />
+            </div>
+
+            {/* Section 4: Success Metrics */}
+            <div className="rounded-lg border-[3px] border-black bg-white p-6 shadow-[4px_4px_0px_#000]">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-xl font-bold tracking-wide text-black uppercase">
+                  4. Success Metrics
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => handleRefineSection('4. Success Metrics')}
+                  className="flex items-center gap-2 border-[2px] border-black bg-[#E91E63] px-4 py-2 text-sm font-bold uppercase text-white shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
+                >
+                  <Edit3 className="h-4 w-4" />
+                  {t('refine.refineWithAi')}
+                </button>
+              </div>
+              <TextareaField
+                label={t('wizard.successMetrics')}
+                id="successMetrics"
+                name="successMetrics"
+                value={prdInput.successMetrics}
+                onChange={handleChange}
+                placeholder={t('wizard.successMetricsPlaceholder')}
+                rows={4}
+                description={t('wizard.successMetricsDesc')}
+              />
             </div>
 
             {generateError && (
@@ -579,6 +695,18 @@ export function PRDWizard({
           </div>
         )}
       </div>
+
+      {/* Refine Modal */}
+      <RefineModal
+        isOpen={isRefineModalOpen}
+        onClose={() => setIsRefineModalOpen(false)}
+        onSubmit={handleRefineSubmit}
+        isLoading={isRefining}
+        sectionTitle={refineSectionTitle}
+        feedback={refineFeedback}
+        setFeedback={setRefineFeedback}
+        error={refineError}
+      />
     </div>
   );
 }
