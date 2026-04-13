@@ -212,9 +212,7 @@ export function FullPagePRDViewer({
               </div>
             ) : (
               <div className="py-16 text-center">
-                <p className="text-lg text-gray-500">
-                  {t('viewer.noContent')}
-                </p>
+                <p className="text-lg text-gray-500">{t('viewer.noContent')}</p>
                 <p className="mt-2 text-gray-400">
                   {t('viewer.pleaseGenerate')}
                 </p>

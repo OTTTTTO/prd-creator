@@ -80,7 +80,10 @@ export function RefineModal({
             {error ? (
               <div className="mt-4 border-[3px] border-black bg-[#F44336] p-4 text-white shadow-[4px_4px_0px_#000]">
                 <p>
-                  <span className="font-bold uppercase">{t('refine.error')}</span> {error}
+                  <span className="font-bold uppercase">
+                    {t('refine.error')}
+                  </span>{' '}
+                  {error}
                 </p>
               </div>
             ) : null}

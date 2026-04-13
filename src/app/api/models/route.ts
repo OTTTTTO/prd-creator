@@ -22,7 +22,10 @@ interface FormattedModel {
 
 export async function POST(request: NextRequest) {
   try {
-    const { apiKey, locale } = (await request.json()) as { apiKey?: string; locale?: string };
+    const { apiKey, locale } = (await request.json()) as {
+      apiKey?: string;
+      locale?: string;
+    };
 
     if (!apiKey || typeof apiKey !== 'string') {
       return NextResponse.json(

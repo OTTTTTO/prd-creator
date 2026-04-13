@@ -125,7 +125,10 @@ ${inputs.constraints || '...'}
   `;
 }
 
-export function buildGenerationPrompt(inputs: PrdInput, locale?: string): string {
+export function buildGenerationPrompt(
+  inputs: PrdInput,
+  locale?: string
+): string {
   // Build image context if images are provided
   let imageContext = '';
   if (inputs.productIdeaImages && inputs.productIdeaImages.length > 0) {

@@ -11,9 +11,13 @@ export function useDocumentMetadata() {
     document.documentElement.lang = locale;
 
     const setMeta = (property: string, content: string) => {
-      let el = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement | null;
+      let el = document.querySelector(
+        `meta[property="${property}"]`
+      ) as HTMLMetaElement | null;
       if (!el) {
-        el = document.querySelector(`meta[name="${property}"]`) as HTMLMetaElement | null;
+        el = document.querySelector(
+          `meta[name="${property}"]`
+        ) as HTMLMetaElement | null;
       }
       if (el) {
         el.setAttribute('content', content);

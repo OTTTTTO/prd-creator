@@ -61,9 +61,7 @@ export default function OfflinePage() {
           {t('offline.title')}
         </h1>
 
-        <p className="mb-8 text-slate-600">
-          {t('offline.description')}
-        </p>
+        <p className="mb-8 text-slate-600">{t('offline.description')}</p>
 
         <div className="space-y-4">
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">

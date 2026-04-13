@@ -1,6 +1,12 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback
+} from 'react';
 import { Locale, defaultLocale, locales } from './config';
 import en from '@/locales/en.json';
 import zh from '@/locales/zh.json';
@@ -29,7 +35,7 @@ interface LanguageContextValue {
 const LanguageContext = createContext<LanguageContextValue>({
   locale: defaultLocale,
   setLocale: () => {},
-  t: (key) => key,
+  t: (key) => key
 });
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
