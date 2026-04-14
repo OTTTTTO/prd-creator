@@ -92,7 +92,8 @@ For features, use bullet points within the string. For success metrics, include 
 
     const response = await generateText({
       model,
-      prompt: promptWithContext
+      prompt: promptWithContext,
+      maxRetries: 0
     });
 
     const jsonString = response.text?.trim();

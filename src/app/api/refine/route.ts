@@ -84,7 +84,9 @@ export async function POST(request: NextRequest) {
     });
 
     // Build JSON schema for the specific section
-    const schemaProperties = fieldsToRefine.map((field) => `    "${field}": { "type": "string" }`).join('\n');
+    const schemaProperties = fieldsToRefine
+      .map((field) => `    "${field}": { "type": "string" }`)
+      .join('\n');
     const jsonSchema = `{
   "type": "object",
   "properties": {\n${schemaProperties}\n  },
@@ -121,7 +123,8 @@ Return ONLY the JSON object, no additional text or explanations.`;
     const model = createLanguageModel(provider);
     const response = await generateText({
       model,
-      prompt: promptWithContext
+      prompt: promptWithContext,
+      maxRetries: 0
     });
 
     const jsonString = response.text?.trim();

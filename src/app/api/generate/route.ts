@@ -71,7 +71,8 @@ export async function POST(request: NextRequest) {
 
     const response = await generateText({
       model,
-      prompt: promptWithContext
+      prompt: promptWithContext,
+      maxRetries: 0
     });
 
     const text = response.text?.trim();
