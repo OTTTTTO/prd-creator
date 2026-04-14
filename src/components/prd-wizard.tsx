@@ -533,7 +533,7 @@ export function PRDWizard({
                 <button
                   type="button"
                   onClick={() => handleRefineSection('1. Core Product Idea')}
-                  className="flex items-center gap-2 border-[2px] border-black bg-[#E91E63] px-4 py-2 text-sm font-bold uppercase text-white shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
+                  className="flex items-center gap-2 border-[2px] border-black bg-[#E91E63] px-4 py-2 text-sm font-bold text-white uppercase shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
                 >
                   <Edit3 className="h-4 w-4" />
                   {t('refine.refineWithAi')}
@@ -577,7 +577,7 @@ export function PRDWizard({
                 <button
                   type="button"
                   onClick={() => handleRefineSection('2. Audience & Market')}
-                  className="flex items-center gap-2 border-[2px] border-black bg-[#E91E63] px-4 py-2 text-sm font-bold uppercase text-white shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
+                  className="flex items-center gap-2 border-[2px] border-black bg-[#E91E63] px-4 py-2 text-sm font-bold text-white uppercase shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
                 >
                   <Edit3 className="h-4 w-4" />
                   {t('refine.refineWithAi')}
@@ -603,7 +603,7 @@ export function PRDWizard({
                 <button
                   type="button"
                   onClick={() => handleRefineSection('3. Features & Scope')}
-                  className="flex items-center gap-2 border-[2px] border-black bg-[#E91E63] px-4 py-2 text-sm font-bold uppercase text-white shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
+                  className="flex items-center gap-2 border-[2px] border-black bg-[#E91E63] px-4 py-2 text-sm font-bold text-white uppercase shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
                 >
                   <Edit3 className="h-4 w-4" />
                   {t('refine.refineWithAi')}
@@ -630,7 +630,7 @@ export function PRDWizard({
                 <button
                   type="button"
                   onClick={() => handleRefineSection('4. Success Metrics')}
-                  className="flex items-center gap-2 border-[2px] border-black bg-[#E91E63] px-4 py-2 text-sm font-bold uppercase text-white shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
+                  className="flex items-center gap-2 border-[2px] border-black bg-[#E91E63] px-4 py-2 text-sm font-bold text-white uppercase shadow-[2px_2px_0px_#000] transition-all duration-150 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000]"
                 >
                   <Edit3 className="h-4 w-4" />
                   {t('refine.refineWithAi')}

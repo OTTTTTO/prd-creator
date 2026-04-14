@@ -109,7 +109,8 @@ async function fetchGeminiModels(
       (model: GoogleModel): FormattedModel => ({
         value: model.name.replace('models/', ''), // Remove 'models/' prefix
         label: model.displayName || formatGeminiModelName(model.name),
-        description: model.description || getGeminiDefaultDescription(model.name),
+        description:
+          model.description || getGeminiDefaultDescription(model.name),
         displayName: model.displayName || formatGeminiModelName(model.name),
         inputTokenLimit: model.inputTokenLimit || null,
         outputTokenLimit: model.outputTokenLimit || null,
@@ -136,7 +137,7 @@ async function fetchOpenAIModels(
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
+      Authorization: `Bearer ${apiKey}`
     }
   });
 
@@ -205,9 +206,12 @@ async function fetchCustomModels(
       return [];
     }
 
-    const data = (await response.json()) as { data?: OpenAIModel[] } | { models?: OpenAIModel[] };
+    const data = (await response.json()) as
+      | { data?: OpenAIModel[] }
+      | { models?: OpenAIModel[] };
 
-    const models = 'data' in data ? data.data : (data as { models?: OpenAIModel[] }).models;
+    const models =
+      'data' in data ? data.data : (data as { models?: OpenAIModel[] }).models;
 
     if (!models || !Array.isArray(models)) {
       return [];
@@ -317,13 +321,29 @@ function getGeminiPriority(name: string): number {
     !lower.includes('lite')
   )
     return 0;
-  if (lower.includes('2.5') && lower.includes('flash') && lower.includes('preview'))
+  if (
+    lower.includes('2.5') &&
+    lower.includes('flash') &&
+    lower.includes('preview')
+  )
     return 1;
-  if (lower.includes('2.5') && lower.includes('flash') && lower.includes('lite'))
+  if (
+    lower.includes('2.5') &&
+    lower.includes('flash') &&
+    lower.includes('lite')
+  )
     return 2;
-  if (lower.includes('2.5') && lower.includes('pro') && !lower.includes('preview'))
+  if (
+    lower.includes('2.5') &&
+    lower.includes('pro') &&
+    !lower.includes('preview')
+  )
     return 3;
-  if (lower.includes('2.5') && lower.includes('pro') && lower.includes('preview'))
+  if (
+    lower.includes('2.5') &&
+    lower.includes('pro') &&
+    lower.includes('preview')
+  )
     return 4;
 
   // Gemini 2.0 - Flash first, then Pro
@@ -342,16 +362,32 @@ function getGeminiPriority(name: string): number {
     !lower.includes('thinking')
   )
     return 6;
-  if (lower.includes('2.0') && lower.includes('flash') && lower.includes('lite'))
+  if (
+    lower.includes('2.0') &&
+    lower.includes('flash') &&
+    lower.includes('lite')
+  )
     return 7;
   if (lower.includes('2.0') && lower.includes('pro')) return 8;
-  if (lower.includes('2.0') && lower.includes('flash') && lower.includes('thinking'))
+  if (
+    lower.includes('2.0') &&
+    lower.includes('flash') &&
+    lower.includes('thinking')
+  )
     return 9;
 
   // Generic latest models
-  if (lower.includes('flash') && lower.includes('latest') && !lower.includes('lite'))
+  if (
+    lower.includes('flash') &&
+    lower.includes('latest') &&
+    !lower.includes('lite')
+  )
     return 10;
-  if (lower.includes('flash') && lower.includes('lite') && lower.includes('latest'))
+  if (
+    lower.includes('flash') &&
+    lower.includes('lite') &&
+    lower.includes('latest')
+  )
     return 11;
   if (lower.includes('pro') && lower.includes('latest')) return 12;
 
@@ -366,7 +402,8 @@ function getGeminiPriority(name: string): number {
 // Helper functions for OpenAI models
 function formatOpenAIModelName(modelId: string): string {
   // GPT-4.1 and later
-  if (modelId.includes('gpt-4.1')) return modelId.replace('gpt-', 'GPT-').toUpperCase();
+  if (modelId.includes('gpt-4.1'))
+    return modelId.replace('gpt-', 'GPT-').toUpperCase();
   if (modelId === 'gpt-4o') return 'GPT-4o';
   if (modelId === 'gpt-4o-mini') return 'GPT-4o Mini';
   if (modelId.includes('gpt-4-turbo')) return 'GPT-4 Turbo';
@@ -422,7 +459,12 @@ function getOpenAIPriority(modelId: string): number {
   if (lower.includes('gpt-4-turbo')) return 5;
 
   // GPT-4
-  if (lower.includes('gpt-4') && !lower.includes('turbo') && !lower.includes('o')) return 6;
+  if (
+    lower.includes('gpt-4') &&
+    !lower.includes('turbo') &&
+    !lower.includes('o')
+  )
+    return 6;
 
   // GPT-3.5
   if (lower.includes('gpt-3.5')) return 10;
