@@ -52,7 +52,9 @@ export function createLanguageModel(config: ProviderConfig): LanguageModelV3 {
         apiKey: apiKey || undefined
       });
 
-      return openai(model);
+      // Use chat completions API for all OpenAI-compatible providers.
+      // Default openai() uses the Responses API which only OpenAI supports.
+      return openai.chat(model);
     }
 
     default:
