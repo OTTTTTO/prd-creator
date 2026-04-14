@@ -2,12 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { GEMINI_MODELS } from '@/lib/models';
-import {
-  Settings,
-  Check,
-  ChevronDown,
-  Globe
-} from 'lucide-react';
+import { Settings, Check, ChevronDown, Globe } from 'lucide-react';
 import { useLanguage } from '@/i18n/language-provider';
 import {
   ProviderConfig,
@@ -89,7 +84,8 @@ export function SettingsModal({
               const matchedPreset = Object.entries(PRESET_PROVIDERS).find(
                 ([_, preset]) =>
                   preset.type === config.type &&
-                  (config.type === 'gemini' || preset.baseUrl === config.baseUrl)
+                  (config.type === 'gemini' ||
+                    preset.baseUrl === config.baseUrl)
               );
               setSelectedPreset(matchedPreset?.[0] || 'custom');
             }
@@ -101,17 +97,17 @@ export function SettingsModal({
     }
   }, [isOpen, currentProvider]);
 
-  // Update form when preset changes
-  useEffect(() => {
-    const preset = PRESET_PROVIDERS[selectedPreset];
+  // Handle manual preset change (not from initial load)
+  const handlePresetChange = (newPreset: string) => {
+    setSelectedPreset(newPreset);
+    const preset = PRESET_PROVIDERS[newPreset];
     if (preset) {
       setBaseUrl(preset.baseUrl);
       setModel(preset.model);
       setCustomModel(preset.model);
-      // Clear API key when switching providers for security
       setApiKey('');
     }
-  }, [selectedPreset]);
+  };
 
   // Fetch models when API key and provider are configured
   useEffect(() => {
@@ -267,13 +263,14 @@ export function SettingsModal({
                 htmlFor="provider"
                 className="mb-3 block text-sm font-bold tracking-wide text-black uppercase"
               >
-                {t('settings.provider')} <span className="text-[#E91E63]">*</span>
+                {t('settings.provider')}{' '}
+                <span className="text-[#E91E63]">*</span>
               </label>
               <div className="relative">
                 <select
                   id="provider"
                   value={selectedPreset}
-                  onChange={(e) => setSelectedPreset(e.target.value)}
+                  onChange={(e) => handlePresetChange(e.target.value)}
                   className="w-full appearance-none border-[3px] border-black bg-white px-4 py-3 pr-12 font-medium text-black shadow-[4px_4px_0px_#000] focus:border-[#2196F3] focus:shadow-[4px_4px_0px_#2196F3] focus:outline-none"
                 >
                   {PROVIDER_OPTIONS.map((option) => (
@@ -282,7 +279,7 @@ export function SettingsModal({
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="absolute top-1/2 right-4 h-5 w-5 -translate-y-1/2 text-black pointer-events-none" />
+                <ChevronDown className="pointer-events-none absolute top-1/2 right-4 h-5 w-5 -translate-y-1/2 text-black" />
               </div>
             </div>
 
@@ -296,7 +293,9 @@ export function SettingsModal({
                   <span className="flex items-center gap-2">
                     <Globe className="h-4 w-4" />
                     {t('settings.baseUrl')}{' '}
-                    {requiresApiKey && <span className="text-[#E91E63]">*</span>}
+                    {requiresApiKey && (
+                      <span className="text-[#E91E63]">*</span>
+                    )}
                   </span>
                 </label>
                 <input
@@ -450,7 +449,7 @@ export function SettingsModal({
                   <button
                     type="button"
                     onClick={() => setModelInputMode(true)}
-                    className="border-[2px] border-black bg-white px-3 py-2 text-xs font-bold uppercase text-black transition-colors hover:bg-[#FFEB3B]"
+                    className="border-[2px] border-black bg-white px-3 py-2 text-xs font-bold text-black uppercase transition-colors hover:bg-[#FFEB3B]"
                     title="Custom model"
                   >
                     ✏️
@@ -474,7 +473,7 @@ export function SettingsModal({
                         setCustomModel(models[0].value);
                       }
                     }}
-                    className="border-[2px] border-black bg-white px-3 py-2 text-xs font-bold uppercase text-black transition-colors hover:bg-[#FFEB3B]"
+                    className="border-[2px] border-black bg-white px-3 py-2 text-xs font-bold text-black uppercase transition-colors hover:bg-[#FFEB3B]"
                     title="Use preset"
                   >
                     📋
